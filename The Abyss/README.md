@@ -65,7 +65,7 @@ This loop would run 10 times up to the point where count = 10, at which point it
 ### Conditionals
   Conditional statements will follow the standard, ```if``` ```else if``` and ```else``` logic, but with the keywords ```if```, ```eif```, and ```ese```
   
-  Condional logic will be done by spelling out ```or``` and ```and```, and will follow the order of operations with brackets ```[]```
+  Condional logic will be done by spelling out ```or``` and ```and```, and will follow the order of operations using lines ```||``` as parentheses
 
 ## Operators
 //TODO, I have no idea what I can do creatively here hopefully something will come to me later
@@ -125,6 +125,9 @@ All priting to the console will be done through the ```show||``` function
 | repeater   | a for loop that goes from 0 to a specified value 1-4        |
 | comparater   | a while(true) loop        |
 | show   | prints arguments to the console        |
+| if      | standard if conditional      |
+| eif     | else if conditional    |
+| ese      | else conditional      |
 | +   | adds any numbers following it together (separated by underscores)        |
 | -   | subtracts the first number following it from all the numbers following it added together (separated by underscores)       |
 | ++  | adds 1 to the first variable that follows it        |
