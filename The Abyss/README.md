@@ -1,7 +1,7 @@
 # Redstone Language
 The goal of this project is to created a language modeled after the functionality of minecraft redstone. Since this would be very difficult to do and might not fit well within the scope of this class, it will probably just be mostly themed around the game of minecraft.
 
-Minecraft is a game done entirely with blocks, and therefore curvy special characters like parentheses ```()``` and braces ```{}``` are not supported int the Redstone language. Instead, characters are replaced with brackets ```[]``` and verticle bars ```||``` when applicable
+Minecraft is a game done entirely with blocks, and therefore curvy special characters like parentheses ```()``` and braces ```{}``` are not supported in the Redstone language. Instead, characters are replaced with brackets ```[]``` and verticle bars ```||``` when applicable
 
 ## Variables
 Although the redstone system is turing complete, it doesn't really have a way to store variables.
