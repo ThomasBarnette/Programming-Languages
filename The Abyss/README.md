@@ -108,8 +108,17 @@ Way #1 (single quotes and commas):
 ```
 Way #2 (.add method):
 ```
-You can 
+/summon x = ''
+x.add|2|
+show|x|
 ```
+the console would then print out ``` '2' ```. The   ```list.remove||``` method will also be supported.
+To access from a list, you can use the ```@```symbol to find the value at the given index:
+```
+/summon x = '1, 2, 3'
+show|x@1|
+```
+This would print ```2``` to the console
 ## Built-In Functions
 ### Printing to the console
 All priting to the console will be done through the ```show||``` function
@@ -144,9 +153,11 @@ All priting to the console will be done through the ```show||``` function
 | >=  | "greater than or equal to" comparator         |
 | <=   | "less than or equal to" comparator         |
 | <>   | "equals" comparator        |
-| <num>   | "is within num of" comparator        |
+| \<num>   | "is within num of" comparator        |
 | ><   | "inequal to" comparator         |
 | >num<   | "is not within num of" comparator        |
+| @   | access the given index in a given list      |
+        
 
 
 ## Backlog/Thoughts
