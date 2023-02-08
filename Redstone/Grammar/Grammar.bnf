@@ -1,0 +1,106 @@
+program ::= statementList
+
+statementList ::= statement*
+
+statement ::= expression end
+            | assignment end
+            | initialzation end
+            | declaration end
+            | deletion end
+            | functionCall end
+            | returnStatement end
+            | functionDefiniton
+            | conditionalStatement
+            | loop
+        
+expression ::= unaryExpression
+            | binaryExpression
+            | condionalExpression
+            | primary
+
+unaryExpression ::= unaryOperator primary
+
+binaryExpression ::= binaryOperator primary+
+                   | unaryAssignmentOperator primary
+
+condionalExpression ::= primary conditionalOperator primary
+
+primary ::= IDENTIFIER
+          | booleanLiteral
+          | STRING
+          | NUMBER
+          | functionCall
+          
+
+assignment ::= IDENTIFIER "=" expression
+
+initialzation ::= "/summon" IDENTIFIER "=" expression
+
+declaration ::= "/summon" IDENTIFIER
+
+deletion ::= "/kill" IDENTIFIER
+
+functionCall ::= IDENTIFIER "|." paramterList? ".|"
+
+functionDefiniton ::= hopperFunction
+                   |  dropperFunction
+                   | hopperDropperFunction
+
+hopperFunction ::= "hopper" " " IDENTIFIER "|." paramterList ".|" " " "[" statementList "]"
+
+dropperFunction ::= "dropper" " " IDENTIFIER "|..|" " " "[" statementList "]"
+
+hopperDropperFunction ::= "hopperdropper" " " IDENTIFIER "|." paramterList ".|" " " "[" statementList "]"
+
+paramterList ::= (expression | (expression "," paramterList))
+
+conditionalStatement ::= ifStatement
+                       | eifStatement
+                       | eseStatement
+
+ifStatement ::= "if" "|." condionalExpression ".|" "[" statementList "]"
+
+eifStatement ::= "eif" "|." condionalExpression ".|" "[" statementList "]"
+
+eseStatement ::= "ese" "[" statementList "]"
+
+loop ::= repeaterLoop
+       | comparatorLoop
+
+returnStatement ::= "drop" " " expression
+
+repeaterLoop ::= "repeat" "|." expression ".|" " " "[" statementList "]"
+
+comparatorLoop ::= "comparator" " " "[" statementList "]"
+
+end ::= "܍"
+     | "repeat"
+
+booleanLiteral ::= "true"
+            | "false"
+            
+unaryAssignmentOperator ::= "++"
+                          | "--"
+
+unaryOperator ::= "!"
+                | "**"
+                | "/./"
+                | "%%"
+
+binaryOperator ::= "+"
+                 | "-"
+                 | "*"
+                 | "/"
+                 | "+="
+                 | "-="
+                 | "/="
+                 | "*="
+
+conditionalOperator ::= "and"
+                      | "or"
+                      | "<>"
+                      | "><"
+                      | ">="
+                      | "<="
+                      | "<" NUMBER ">"
+                      | ">" NUMBER "<"
