@@ -8,33 +8,35 @@ statement ::= expression end
             | declaration end
             | deletion end
             | functionCall end
-            | returnStatement end
+            | returnStatement end # where would this go
             | functionDefiniton
             | conditionalStatement
             | loop
         
 expression ::= unaryExpression
-            | binaryExpression
-            | condionalExpression
-            | primary
+            |  naryExpression
+            |  condionalExpression
+            |  primary
 
 unaryExpression ::= unaryOperator primary
 
-binaryExpression ::= binaryOperator primary+
+naryExpression ::= naryOperator primary+ 
                    | unaryAssignmentOperator primary
 
 condionalExpression ::= primary conditionalOperator primary
+                      | expression
 
 primary ::= IDENTIFIER
           | booleanLiteral
           | STRING
           | NUMBER
           | functionCall
+          | "(" expression ")"
           
 
 assignment ::= IDENTIFIER "=" expression
 
-initialzation ::= "/summon" IDENTIFIER "=" expression
+initialzation ::= declaration "=" expression 
 
 declaration ::= "/summon" IDENTIFIER
 
@@ -46,11 +48,11 @@ functionDefiniton ::= hopperFunction
                    |  dropperFunction
                    | hopperDropperFunction
 
-hopperFunction ::= "hopper" " " IDENTIFIER "|." paramterList ".|" " " "[" statementList "]"
+hopperFunction ::= "hopper"  IDENTIFIER "|." paramterList ".|"  "[" statementList "]"
 
-dropperFunction ::= "dropper" " " IDENTIFIER "|..|" " " "[" statementList "]"
+dropperFunction ::= "dropper"  IDENTIFIER "|..|"  "[" statementList "]"
 
-hopperDropperFunction ::= "hopperdropper" " " IDENTIFIER "|." paramterList ".|" " " "[" statementList "]"
+hopperDropperFunction ::= "hopperdropper"  IDENTIFIER "|." paramterList ".|"  "[" statementList "]"
 
 paramterList ::= (expression | (expression "," paramterList))
 
@@ -67,13 +69,13 @@ eseStatement ::= "ese" "[" statementList "]"
 loop ::= repeaterLoop
        | comparatorLoop
 
-returnStatement ::= "drop" " " expression
+returnStatement ::= "drop" expression
 
-repeaterLoop ::= "repeat" "|." expression ".|" " " "[" statementList "]"
+repeaterLoop ::= "repeat" "|." expression ".|" "[" statementList "]"
 
 comparatorLoop ::= "comparator" " " "[" statementList "]"
 
-end ::= "܍"
+end ::= "܍" 
      | "repeat"
 
 booleanLiteral ::= "true"
@@ -87,7 +89,7 @@ unaryOperator ::= "!"
                 | "/./"
                 | "%%"
 
-binaryOperator ::= "+"
+naryOperator ::= "+"
                  | "-"
                  | "*"
                  | "/"
