@@ -8,7 +8,6 @@ statement ::= expression end
             | declaration end
             | deletion end
             | functionCall end
-            | returnStatement end # where would this go
             | functionDefiniton
             | conditionalStatement
             | loop
@@ -50,9 +49,9 @@ functionDefiniton ::= hopperFunction
 
 hopperFunction ::= "hopper"  IDENTIFIER "|." paramterList ".|"  "[" statementList "]"
 
-dropperFunction ::= "dropper"  IDENTIFIER "|..|"  "[" statementList "]"
+dropperFunction ::= "dropper"  IDENTIFIER "|..|"  "[" statementList returnStatement "]"
 
-hopperDropperFunction ::= "hopperdropper"  IDENTIFIER "|." paramterList ".|"  "[" statementList "]"
+hopperDropperFunction ::= "hopperdropper"  IDENTIFIER "|." paramterList ".|"  "[" statementList returnStatement "]"
 
 paramterList ::= (expression | (expression "," paramterList))
 

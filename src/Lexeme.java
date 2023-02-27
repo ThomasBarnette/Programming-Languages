@@ -1,40 +1,71 @@
 public class Lexeme {
-   private final Type type;
+    //Instance Variables
+    private final Types type;
+    private int lineNumber;
 
-   private Integer lineNumber;
+    //------Instance Variable Declaration------
+    private String stringValue;
+    private Double realValue;
+    private Integer intValue;
+    private Boolean boolValue;
 
-   private Integer intVal;
-   private Double realVal;
-   private Boolean booleanVal;
-   private String stringVal;
-   
-   public Lexeme(Type type){
-       this.type = type;
-   }
-
-   public Lexeme(Type type, Integer lineNumber){
-        this.type = type;
+    //-----------Constructors-------------
+    public Lexeme(int lineNumber, Types type) {
         this.lineNumber = lineNumber;
-    }   
-
-    public Lexeme(Type type, Integer lineNumber, Integer intVal){
         this.type = type;
-         this.lineNumber = lineNumber;
-         this.intVal = intVal;
     }
 
-    public Lexeme(Type type, Integer lineNumber, Boolean booleanVal){
+    public Lexeme(int lineNumber, String stringValue, Types type) {
+        this.lineNumber = lineNumber;
+        this.stringValue = stringValue;
         this.type = type;
-         this.booleanVal = booleanVal;
     }
 
-    public Lexeme(Type type, Integer lineNumber, Double realVal){
+     public Lexeme(int lineNumber, Double realValue, Types type) {
+        this.lineNumber = lineNumber;
+        this.realValue = realValue;
         this.type = type;
-         this.realVal = realVal;
     }
 
-    public Lexeme(Type type, Integer lineNumber, String stringVal){
+    public Lexeme(int lineNumber, int intValue, Types type) {
+        this.lineNumber = lineNumber;
+        this.intValue = intValue;
         this.type = type;
-         this.stringVal = stringVal;
+    }
+
+    public Lexeme(int lineNumber, boolean boolValue, Types type) {
+        this.lineNumber = lineNumber;
+        this.boolValue = boolValue;
+        this.type = type;
+    }
+
+    //---------Getters and Setters------------
+    public Integer getIntValue() { return intValue; }
+
+    public Double getRealValue() { return realValue; }
+
+    public Boolean getBoolValue() { return boolValue; }
+
+    public Integer getLineNumber() { return lineNumber; }
+
+    public String getStringValue() { return stringValue; }
+
+    public Types getType() { return type; }
+
+    public void setIntValue(int intValue) { this.intValue = intValue; }
+
+    public void setBoolValue(boolean boolValue) { this.boolValue = boolValue; }
+
+    public void setLineNumber(int lineNumber) { this.lineNumber = lineNumber; }
+
+    public void setWord(String stringValue) {  this.stringValue = stringValue; }
+
+    //--------toString-----------
+    public String toString() {
+        return ("Type" + type +
+        "\nline number " + lineNumber +
+        "\nBoolean value: " + boolValue +
+        "\nInteger Value: " + intValue +
+        "\nString value: " + stringValue);
     }
 }
