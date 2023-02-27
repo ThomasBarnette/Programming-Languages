@@ -1,5 +1,10 @@
+package LexicalAnalysis;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import Redstone.Redstone;
+
+import static LexicalAnalysis.Types.*;
 
 public class Lexer {
     private final String source;
@@ -67,35 +72,27 @@ public class Lexer {
         Redstone.syntaxError(message, lineNumber);
     }
 
+    //TODO
+    public ArrayList<Lexeme> Lex(){
+        return null;
+    }
+
     //Populating keywords
     private HashMap<String, Types> getKeywords(){
         HashMap<String, Types> keywords = new HashMap<>();
-        //TODO
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
-        keywords.put("name", TYPE);
+        keywords.put("/summon", SUMMON);
+        keywords.put("/kill", KILL);
+        keywords.put("repeater", REPEAT);
+        keywords.put("repeater", REPEATER);
+        keywords.put("comparator", COMPARATOR);
+        keywords.put("if", IF);
+        keywords.put("eif", EIF);
+        keywords.put("ese", ESE);
+        keywords.put("true", TRUE);
+        keywords.put("false", FALSE);
+        keywords.put("hopper", HOPPER);
+        keywords.put("dropper", DROPPER);
+        keywords.put("hopper dropper", HOPPER_DROPPER);
+        return keywords;
     } 
-     
-
-
 }

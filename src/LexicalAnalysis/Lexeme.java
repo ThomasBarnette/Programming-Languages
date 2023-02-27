@@ -1,3 +1,4 @@
+package LexicalAnalysis;
 public class Lexeme {
     //Instance Variables
     private final Types type;

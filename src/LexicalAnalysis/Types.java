@@ -1,3 +1,4 @@
+package LexicalAnalysis;
 public enum Types{
      //Keywords
      SUMMON, KILL, REPEAT,

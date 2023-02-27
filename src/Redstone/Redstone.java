@@ -1,8 +1,12 @@
+package Redstone;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import LexicalAnalysis.Lexeme;
+import LexicalAnalysis.Lexer;
 
 public class Redstone {
     private static final ArrayList<String> syntaxErrorMessages = new ArrayList<>();
@@ -34,6 +38,8 @@ public class Redstone {
         Lexer lexer = new Lexer(source);
         ArrayList<Lexeme> lexemes = lexer.lex();
         System.out.println(lexemes);
+
+        printErrors();
     }
 
     public static void syntaxError(String message, int lineNumber){
