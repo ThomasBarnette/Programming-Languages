@@ -14,7 +14,7 @@ statement ::= expression end
         
 expression ::= unaryExpression
             |  naryExpression
-            |  condionalExpression
+            |  conditionalExpression
             |  primary
 
 unaryExpression ::= unaryOperator primary
@@ -22,8 +22,7 @@ unaryExpression ::= unaryOperator primary
 naryExpression ::= naryOperator primary+ 
                    | unaryAssignmentOperator primary
 
-condionalExpression ::= primary conditionalOperator primary
-                      | expression
+conditionalExpression ::= primary conditionalOperator primary
 
 primary ::= IDENTIFIER
           | booleanLiteral
@@ -59,9 +58,9 @@ conditionalStatement ::= ifStatement
                        | eifStatement
                        | eseStatement
 
-ifStatement ::= "if" "|." condionalExpression ".|" "[" statementList "]"
+ifStatement ::= "if" "|." conditionalExpression ".|" "[" statementList "]"
 
-eifStatement ::= "eif" "|." condionalExpression ".|" "[" statementList "]"
+eifStatement ::= "eif" "|." conditionalExpression ".|" "[" statementList "]"
 
 eseStatement ::= "ese" "[" statementList "]"
 
