@@ -14,7 +14,7 @@ public enum Type{
      TRUE, FALSE,
 
     //Functions
-    HOPPER, DROPPER, HOPPER_DROPPER,
+    HOPPER, DROPPER, HOPPER_DROPPER, DROP,
      
      //Single character tokens
      OCUBE, CCUBE, LINEDOT, DOTLINE,
@@ -32,5 +32,5 @@ public enum Type{
      //Conditional Operators
      EQUALITY, INEQUALITY, WITHIN_EQUALITY, LESS_THAN, GREATER_THAN, LESS_THAN_EQUALTO, GREATER_THAN_EQUALTO,
 
-     EOF, ASSIGNMENT, IDENTIFIER, 
+     EOF, ASSIGNMENT, IDENTIFIER, ERROR,
 }

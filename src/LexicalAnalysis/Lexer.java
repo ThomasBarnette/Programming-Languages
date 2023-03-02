@@ -217,6 +217,7 @@ public class Lexer {
         keywords.put("End of File", EOF);
         keywords.put("and", AND);
         keywords.put("or", OR);
+        keywords.put("drop", DROP);
         return keywords;
     } 
 }

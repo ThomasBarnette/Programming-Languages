@@ -54,9 +54,7 @@ hopperDropperFunction ::= "hopperdropper"  IDENTIFIER "|." paramterList ".|"  "[
 
 paramterList ::= (expression | (expression "," paramterList))
 
-conditionalStatement ::= ifStatement
-                       | eifStatement
-                       | eseStatement
+conditionalStatement ::= ifStatement eifStatement* eseStatement?
 
 ifStatement ::= "if" "|." conditionalExpression ".|" "[" statementList "]"
 
