@@ -63,7 +63,7 @@ public class Lexeme {
 
     //--------toString-----------
     public String toString() {
-        return ("\nType " + type +
+        return ("\n\nType " + type +
         " on line number " + lineNumber +
         "\nBoolean value: " + boolValue +
         "\nInteger Value: " + intValue +
