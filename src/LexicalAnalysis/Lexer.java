@@ -115,7 +115,8 @@ public class Lexer {
             case '/':
                 if(match('=')) return new Lexeme(lineNumber, SLASH_EQUALS);
                 else if(match('.') && peekNext() == '/') return new Lexeme(lineNumber, SQRT);
-                // How to distinguish / between longer keywords like /summon?
+                else if(checkKill()) return new Lexeme(lineNumber, KILL);
+                else if(checkSummon()) return new Lexeme(lineNumber, SUMMON);
                 else return new Lexeme(lineNumber, SLASH);
             case '%':
                 return match('%')? new Lexeme(lineNumber, MOD_MOD) : new Lexeme(lineNumber, MOD);
@@ -177,10 +178,24 @@ public class Lexer {
     }
 
     private Lexeme lexString() {
-       while(!isAtEnd() || peek() != '"') advance();
+       while(!isAtEnd() && !match('"')) advance();
        if(isAtEnd()) Redstone.syntaxError("Unclosed String", lineNumber);
-       String string = source.substring(startOfCurrentLexeme, currentPosition-1);
+       String string = source.substring(startOfCurrentLexeme+1, currentPosition-1);
        return new Lexeme(lineNumber, string, STRING);
+    }
+
+    private boolean checkSummon(){
+        if(currentPosition + 6 > source.length()) return false;
+        boolean bool = source.substring(currentPosition, currentPosition+6).equals("summon");
+        if(bool) currentPosition+=6;
+        return bool;
+    }
+
+    private boolean checkKill(){
+        if(currentPosition + 4 > source.length()) return false;
+        boolean bool = source.substring(currentPosition, currentPosition+4).equals("kill");
+        if(bool) currentPosition+=4;
+        return bool;
     }
 
     //Populating keywords

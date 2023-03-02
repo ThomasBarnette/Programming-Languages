@@ -1,4 +1,7 @@
-/summon /kill repeat comparator
+/summon /kill 
+
+repeater comparator
+"hello this is a test" 94
 and
 or [] |. .|
 hopper dropper
