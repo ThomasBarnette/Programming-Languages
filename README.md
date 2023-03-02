@@ -10,3 +10,5 @@ For a complete guidlines to the language look in Redstone/README.md
 * Making recognizer/parser
 * Setting up enviornments
 * Making an interpreter
+
+Created in Spring 2023 by Thomas Barnette © 2023 All rights reserved
