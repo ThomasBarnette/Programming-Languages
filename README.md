@@ -2,7 +2,7 @@
 
 This is the repository for the programming language I am making from scratch, Redstone.
 
-For a complete guidlines to the language look in Redstone/README.md
+For a comprehensive guidline to the language look in Redstone/README.md
 
 ## This project involves:
 * Defining a unique grammar 
