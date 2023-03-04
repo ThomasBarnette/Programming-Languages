@@ -63,11 +63,13 @@ public class Lexeme {
 
     //--------toString-----------
     public String toString() {
+        String value = "EMPTY";
+        if(getIntValue() != null) value = getIntValue().toString();
+        if(getRealValue() != null) value = getRealValue().toString();
+        if(getBoolValue() != null) value = getBoolValue().toString();
+        if(getStringValue() != null) value = getStringValue();
         return ("\n\nType " + type +
         " on line number " + lineNumber +
-        "\nBoolean value: " + boolValue +
-        "\nInteger Value: " + intValue +
-        "\nReal Value: " + realValue +
-        "\nString value: " + stringValue);
+        "\n value: " + value);
     }
 }
