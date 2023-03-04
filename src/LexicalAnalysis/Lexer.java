@@ -114,7 +114,10 @@ public class Lexer {
                 else return new Lexeme(lineNumber, TIMES);
             case '/':
                 if(match('=')) return new Lexeme(lineNumber, SLASH_EQUALS);
-                else if(match('.') && peekNext() == '/') return new Lexeme(lineNumber, SQRT);
+                else if(match('.') && currentPosition < source.length() -2 && source.charAt(currentPosition+2)== '/'){ 
+                    advance();
+                    return new Lexeme(lineNumber, SQRT);
+                }
                 else if(checkKill()) return new Lexeme(lineNumber, KILL);
                 else if(checkSummon()) return new Lexeme(lineNumber, SUMMON);
                 else return new Lexeme(lineNumber, SLASH);
