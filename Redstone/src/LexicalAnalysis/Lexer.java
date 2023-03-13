@@ -67,11 +67,6 @@ public class Lexer {
         return isAlpha(c) || isDigit(c);
     }
 
-    //error reporting
-    private void error(String message){
-        Redstone.syntaxError(message, lineNumber);
-    }
-
     public ArrayList<Lexeme> lex(){
         while(!isAtEnd()) {
             startOfCurrentLexeme = currentPosition;
@@ -206,7 +201,7 @@ public class Lexer {
         HashMap<String, Type> keywords = new HashMap<>();
         keywords.put("/summon", SUMMON);
         keywords.put("/kill", KILL);
-        keywords.put("repeater", REPEAT);
+        keywords.put("repeat", REPEAT);
         keywords.put("repeater", REPEATER);
         keywords.put("comparator", COMPARATOR);
         keywords.put("if", IF);
