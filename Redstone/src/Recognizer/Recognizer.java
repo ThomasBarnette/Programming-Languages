@@ -174,124 +174,154 @@ public class Recognizer {
 
 
     // -------- pending functions  -------------
-    private void statementPending(){
-
+    private boolean statementPending(){
+        //TODO
+        return false;
     }
 
-    private void expressionPending(){
-
+    private boolean expressionPending(){
+       //TODO
+       return false;
     }
 
-    private void unaryExpressionPending(){
-
+    private boolean unaryExpressionPending(){
+       //TODO
+       return false;
     }
 
-    private void naryExpressionPending(){
-
+    private boolean naryExpressionPending(){
+       //TODO
+       return false;
     }
 
-    private void conditionalExpressionPending(){
-
+    private boolean conditionalExpressionPending(){
+       //TODO
+       return false;
     }
 
-    private void primaryPending(){
-
+    private boolean primaryPending(){
+       //TODO
+       return false;
     }
 
-    private void assignmentPending(){
-
+    private boolean assignmentPending(){
+       //TODO
+       return false;
     }
 
-    private void intitializationPending(){
-
+    private boolean intitializationPending(){
+       //TODO
+       return false;
     }
 
-    private void declarationPending(){
-
+    private boolean declarationPending(){
+       //TODO
+       return false;
     }
 
-    private void deletionPending(){
-
+    private boolean deletionPending(){
+       //TODO
+       return false;
     }
 
-    private void functionCallPending(){
-
+    private boolean functionCallPending(){
+       //TODO
+       return false;
     }
 
-    private void functionDefinitonPending(){
-
+    private boolean functionDefinitonPending(){
+       //TODO
+       return false;
     }
 
-    private void hopperFunctionPending(){
-
+    private boolean hopperFunctionPending(){
+       //TODO
+       return false;
     }
 
-    private void dropperFunctionPending(){
-
+    private boolean dropperFunctionPending(){
+       //TODO
+       return false;
     }
 
-    private void hopperDropperFunctionPending(){
-
+    private boolean hopperDropperFunctionPending(){
+       //TODO
+       return false;
     }
 
-    private void parameterListPending(){
-
+    private boolean parameterListPending(){
+       //TODO
+       return false;
     }
 
-    private void conditionalStatementPending(){
-
+    private boolean conditionalStatementPending(){
+       //TODO
+       return false;
     }
 
-    private void ifStatementPending(){
-
+    private boolean ifStatementPending(){
+       //TODO
+       return false;
     }
 
-    private void eifStatementPending(){
-
+    private boolean eifStatementPending(){
+       //TODO
+       return false;
     }
 
-    private void eseStatementPending(){
-
+    private boolean eseStatementPending(){
+       //TODO
+       return false;
     }
 
-    private void loopPending(){
-
+    private boolean loopPending(){
+       //TODO
+       return false;
     }
 
-    private void comparatorLoopPending(){
-
+    private boolean comparatorLoopPending(){
+       //TODO
+       return false;
     }
 
-    private void whileLoopPending(){
-
+    private boolean whileLoopPending(){
+       //TODO
+       return false;
     }
 
-    private void returnStatementPending(){
-
+    private boolean returnStatementPending(){
+       //TODO
+       return false;
     }
 
-    private void endPending(){
-
+    private boolean endPending(){
+       //TODO
+       return false;
     }
 
-    private void booleanLiteralPending(){
-
+    private boolean booleanLiteralPending(){
+       //TODO
+       return false;
     }
 
-    private void unaryAssignmentOperatorPending(){
-
+    private boolean unaryAssignmentOperatorPending(){
+       //TODO
+       return false;
     }
 
-    private void unaryOperatorPending(){
-
+    private boolean unaryOperatorPending(){
+       //TODO
+       return false;
     }
 
-    private void naryOperatorPending(){
-
+    private boolean naryOperatorPending(){
+       //TODO
+       return false;
     }
 
-    private void conditionalOperatorPending(){
-        
+    private boolean conditionalOperatorPending(){
+        //TODO
+        return false;
     }
     
 }

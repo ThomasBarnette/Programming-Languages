@@ -16,7 +16,7 @@ public class Redstone {
         try{
             if(args.length == 1) runFile(args[0]);
             else{
-                System.out.println("Usage: Redstone [path to .arg file]");
+                System.out.println("Usage: Redstone [path to .red file]");
                 System.exit(64);
             }
         }

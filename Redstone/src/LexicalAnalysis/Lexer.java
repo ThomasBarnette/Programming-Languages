@@ -11,9 +11,9 @@ public class Lexer {
     private final ArrayList<Lexeme> lexemes;
     private final HashMap<String, Type> keywords;
 
-    private int currentPosition = 0;
-    private int startOfCurrentLexeme = 0;
-    private int lineNumber = 1;
+    private int currentPosition;
+    private int startOfCurrentLexeme;
+    private int lineNumber;
 
     //constructor
     public Lexer(String source){
@@ -129,6 +129,7 @@ public class Lexer {
             case '<':
                 if(match('>')) return new Lexeme(lineNumber, EQUALITY);
                 else if(match('=')) return new Lexeme(lineNumber, LESS_THAN_EQUALTO);
+                else if(currentPosition + 2 < source.length() && (isDigit(peek()) && peekNext() == '>')) return withinEquality();
                 else return new Lexeme(lineNumber, LESS_THAN);
             case '>':
                 if(match('<')) return new Lexeme(lineNumber, INEQUALITY);
@@ -139,7 +140,7 @@ public class Lexer {
             default:
                 if(isDigit(c)) return lexNumber();
                 if(isAlpha(c)) return lexIdentifierOrKeyword();
-                else Redstone.syntaxError("Unexpected token on \" " + c + "\"", lineNumber);;
+                else Redstone.syntaxError("Unexpected token on \" " + c + "\"", lineNumber);
         }
         return null;
     }
@@ -180,6 +181,30 @@ public class Lexer {
        if(isAtEnd()) Redstone.syntaxError("Unclosed String", lineNumber);
        String string = source.substring(startOfCurrentLexeme+1, currentPosition-1);
        return new Lexeme(lineNumber, string, STRING);
+    }
+
+    private Lexeme withinEquality(){
+        startOfCurrentLexeme++;
+        boolean isInteger = true;
+        while(isDigit(peek())) advance();
+
+        //Checking if real or double
+        if(peek() == '.'){
+            if(!isDigit(peekNext())) Redstone.syntaxError("Expecting number following decimal point", lineNumber);
+            isInteger = false;
+            advance();
+            while(isDigit(peek())) advance();
+        }
+
+        String numberString = source.substring(startOfCurrentLexeme, currentPosition);
+        currentPosition++;
+        if(isInteger){
+            int number = Integer.parseInt(numberString);
+            return new Lexeme(lineNumber, number, WITHIN_EQUALITY);
+        } else {
+            double number = Double.parseDouble(numberString);
+            return new Lexeme(lineNumber, number, WITHIN_EQUALITY);
+        }
     }
 
     private boolean checkSummon(){
