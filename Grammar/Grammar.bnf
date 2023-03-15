@@ -19,8 +19,10 @@ expression ::= unaryExpression
 
 unaryExpression ::= unaryOperator primary
 
-naryExpression ::= naryOperator primary+ 
-                   | unaryAssignmentOperator primary
+naryExpression ::= naryOperator "(" primaryBlock* primary ")"
+                 | unaryAssignmentOperator primary
+
+primaryBlock ::= primary " "
 
 conditionalExpression ::= primary conditionalOperator primary
 
@@ -29,7 +31,7 @@ primary ::= IDENTIFIER
           | STRING
           | NUMBER
           | functionCall
-          | "(" expression ")"
+          | "|." expression ".|"
           
 
 assignment ::= IDENTIFIER "=" expression

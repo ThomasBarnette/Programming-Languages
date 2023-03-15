@@ -1,5 +1,6 @@
 package Recognizer;
 
+import java.lang.Thread.State;
 import java.util.ArrayList;
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Type;
@@ -50,49 +51,98 @@ public class Recognizer {
         return toReturn;
     }
 
+    private void error(String string) {
+        Redstone.syntaxError(string, currentLexeme.getLineNumber());
+    }
+
 
     // -------- consumption functions ----------
+ 
     private void statement(){
-
+        if(expressionPending()) expression();
+        else if(assignmentPending()) assignment();
+        else if(intitializationPending()) intitialization();
+        else if(declarationPending()) declaration();
+        else if(deletionPending()) deletion();
+        else if(conditionalStatementPending()) conditionalStatement();
+        else if(loopPending()) loop();
+        // else error("Expected statement, none found");
     }
 
     private void expression(){
-
+        if(unaryExpressionPending()) unaryExpression();
+        else if(naryExpressionPending()) naryExpression();
+        else if(conditionalExpressionPending()) conditionalExpression();
+        else if(primaryPending()) primary();
+        // else error("Expected expression, none found");
     }
 
     private void unaryExpression(){
-
+        unaryOperator();
+        primary();
     }
 
     private void naryExpression(){
+        naryOperator();
+        consume(LINEDOT);
+        while(primaryBlockPending()) primaryBlock();
+        consume(DOTLINE);
+    }
 
+    private void primaryBlock() {
+        primary();
+        consume(CONNECTION);
     }
 
     private void conditionalExpression(){
-
+        primary();
+        conditionalOperator();
+        primary();
     }
 
     private void primary(){
-
+        if(check(STRING)) consume(STRING);
+        else if(check(IDENTIFIER)) consume(IDENTIFIER);
+        else if(check(REAL)) consume(REAL);
+        else if(check(INTEGER)) consume(Type.INTEGER);
+        else if(functionCallPending()) functionCall();
+        else{
+            consume(LINEDOT);
+            expression();
+            consume(DOTLINE);
+        }
     }
 
     private void assignment(){
-
+        consume(IDENTIFIER);
+        consume(ASSIGNMENT);
+        expression();
     }
 
     private void intitialization(){
-
+        declaration();
+        consume(ASSIGNMENT);
+        expression();
     }
 
     private void declaration(){
-
+        consume(SUMMON);
+        consume(IDENTIFIER);
     }
 
     private void deletion(){
-
+        consume(KILL);
+        consume(IDENTIFIER);
     }
 
     private void functionCall(){
+        consume(IDENTIFIER);
+        consume(LINEDOT);
+        parameterList();
+        consume(DOTLINE);
+        consume(OCUBE);
+        parameterList();
+        consume(CCUBE);
 
     }
 
@@ -321,6 +371,10 @@ public class Recognizer {
 
     private boolean conditionalOperatorPending(){
         //TODO
+        return false;
+    }
+
+    private boolean primaryBlockPending() {
         return false;
     }
     
