@@ -24,7 +24,7 @@ public enum Type{
      PLUS, MINUS, TIMES, SLASH, SQRT, TIMES_TIMES, PLUS_EQUALS, MINUS_EQUALS, TIMES_EQUALS, 
      SLASH_EQUALS, PLUS_PLUS, MINUS_MINUS, MOD, MOD_MOD, 
 
-     AND, OR, NOT, 
+     AND, OR, NOT, COMMA,
 
      // maybe include?  
      //XOR, NOR, NAND, XAND,

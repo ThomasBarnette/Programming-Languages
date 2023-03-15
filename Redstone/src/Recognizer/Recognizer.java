@@ -57,7 +57,14 @@ public class Recognizer {
 
 
     // -------- consumption functions ----------
- 
+    private void program(){
+        statementList();
+    }
+
+    private void statementList(){
+        while(statementPending()) statement();
+    }
+
     private void statement(){
         if(expressionPending()) expression();
         else if(assignmentPending()) assignment();
@@ -65,6 +72,8 @@ public class Recognizer {
         else if(declarationPending()) declaration();
         else if(deletionPending()) deletion();
         else if(conditionalStatementPending()) conditionalStatement();
+        else if(functionDefinitonPending()) functionDefiniton();
+        else if(functionCallPending()) functionCall();
         else if(loopPending()) loop();
         // else error("Expected statement, none found");
     }
@@ -140,46 +149,92 @@ public class Recognizer {
         consume(LINEDOT);
         parameterList();
         consume(DOTLINE);
-        consume(OCUBE);
-        parameterList();
-        consume(CCUBE);
-
     }
 
     private void functionDefiniton(){
-
+        if(hopperFunctionPending()) hopperFunction();
+        else if(dropperFunctionPending()) dropperFunction();
+        else if(hopperDropperFunctionPending()) hopperDropperFunction();
+        else error("Expected function call, found none");
     }
 
     private void hopperFunction(){
-
+        consume(HOPPER);
+        consume(IDENTIFIER);
+        consume(LINEDOT);
+        parameterList();
+        consume(DOTLINE);
+        consume(OCUBE);
+        statementList();
+        consume(CCUBE);
     }
 
     private void dropperFunction(){
-
+        consume(DROPPER);
+        consume(IDENTIFIER);
+        consume(LINEDOT);
+        consume(DOTLINE);
+        consume(OCUBE);
+        statementList();
+        consume(CCUBE);
     }
 
     private void hopperDropperFunction(){
-
+        consume(HOPPER);
+        consume(IDENTIFIER);
+        consume(LINEDOT);
+        parameterList();
+        consume(DOTLINE);
+        consume(OCUBE);
+        statementList();
+        consume(DROP);
+        consume(CCUBE);
     }
 
     private void parameterList(){
+        while(parameterContPending()) parameterCont();
+        expression();
+    }
 
+    
+
+    private void parameterCont() {
+        expression();
+        consume(COMMA);
+        parameterList();
     }
 
     private void conditionalStatement(){
-
+        ifStatement();
+        while(eifStatementPending()) eifStatement();
+        if(eseStatementPending()) eseStatement();
     }
 
     private void ifStatement(){
-
+        consume(IF);
+        consume(LINEDOT);
+        conditionalExpression();
+        consume(DOTLINE);
+        consume(OCUBE);
+        statementList();
+        consume(CCUBE);
     }
 
     private void eifStatement(){
-
+        consume(EIF);
+        consume(LINEDOT);
+        conditionalExpression();
+        consume(DOTLINE);
+        consume(OCUBE);
+        statementList();
+        consume(CCUBE);
     }
 
     private void eseStatement(){
-
+        consume(ESE);
+        consume(OCUBE);
+        statementList();
+        consume(CCUBE);
     }
 
     private void loop(){
@@ -378,4 +433,7 @@ public class Recognizer {
         return false;
     }
     
+    private boolean parameterContPending() {
+        return false;
+    }
 }
