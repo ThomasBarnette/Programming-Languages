@@ -3,7 +3,7 @@ comparator [
 ]
 
 repeater |. 3 .| [
-
+    functionCall|. .|܍
 ]
 
 comparator |. 2 .| [

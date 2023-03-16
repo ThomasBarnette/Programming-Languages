@@ -112,9 +112,8 @@ public class Recognizer {
         log("naryExpression");
         if(naryOperatorPending()){
             naryOperator();
-            consume(LINEDOT);
             while(primaryBlockPending()) primaryBlock();
-            consume(DOTLINE);
+            primary();
         }
         else if(unaryAssignmentOperatorPending()){
             unaryAssignmentOperator();
@@ -153,11 +152,12 @@ public class Recognizer {
         else if(check(INTEGER)) consume(Type.INTEGER);
         else if(functionCallPending()) functionCall();
         else if(booleanLiteralPending()) booleanLiteral();
-        else{
+        else if(check(LINEDOT)) {
             consume(LINEDOT);
             expression();
             consume(DOTLINE);
         }
+        else error("Expected primary, found none");
     }
 
     private void assignment(){

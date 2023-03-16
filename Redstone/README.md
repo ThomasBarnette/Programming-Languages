@@ -112,7 +112,7 @@ Way #2 (.add method):
 x.add|2|
 show|x|
 ```
-the console would then print out ``` '2' ```. The   ```list.remove||``` method will also be supported.
+the console would then print out ``` '2' ```. The   ```list.remove|. .|``` method will also be supported.
 To access from a list, you can use the ```@```symbol to find the value at the given index:
 ```
 /summon x = '1, 2, 3'
@@ -121,42 +121,43 @@ show|x@1|
 This would print ```2``` to the console
 ## Built-In Functions
 ### Printing to the console
-All priting to the console will be done through the ```show||``` function
+All priting to the console will be done through the ```show|. .|``` function
 
 # Keywords/Operators
 | Syntax      | Description |
 | ----------- | ----------- |
-| /summon      | creates a new variable      |
-| /kill   | "deletes" an already existing variable        |
-| hopper   | makes a function w paramters and doesn't return a value        |
-| dropper   | makes a function w/out paramters and doesn't return a value       |
-| hopper dropper   | makes a function with parameters and returns a value       |
-| repeater   | a for loop that goes from 0 to a specified value 1-4        |
-| comparater   | a while(true) loop        |
-| show   | prints arguments to the console        |
-| if      | standard if conditional      |
-| eif     | else if conditional    |
-| ese      | else conditional      |
-| +   | adds any numbers following it together (separated by underscores)        |
-| -   | subtracts the first number following it from all the numbers following it added together (separated by underscores)       |
-| ++  | adds 1 to the first variable that follows it        |
-| --   | subracts 1 to the first variable that follows it        |
-| +=   | a variable is assigned to the following numbers added together (plus the variable)       |
-| -=   | a variable is assigned to its value subtracted from the numbers values added together        |
-| *   | multiplies any numbers following it together      |
-| /   | divides the second number following it from the first (only accepts 2 numbers)      |
-| **   | squares the number following it       |
-| *=   | a variable is assigned itself multiplied by the following numbers      |
-| /=   | variable is assigned itself divided by the number immediatly followed        |
-| >   | "greater than" comparator       |
-| <   | "less than' comparator        |
-| >=  | "greater than or equal to" comparator         |
-| <=   | "less than or equal to" comparator         |
-| <>   | "equals" comparator        |
-| \<num>   | "is within num of" comparator        |
-| ><   | "inequal to" comparator         |
-| >num<   | "is not within num of" comparator        |
-| @   | access the given index in a given list      |
+| ```/summon```      | creates a new variable      |
+| ```/kill```   | "deletes" an already existing variable        |
+| ```hopper```  | makes a function w paramters and doesn't return a value        |
+| ```dropper```   | makes a function w/out paramters and doesn't return a value       |
+| ```hopper dropper```  | makes a function with parameters and returns a value       |
+| ```repeater```   | a for loop that goes from 0 to a specified value 1-4        |
+| ```comparator```   | a while(true) loop        |
+| ```show```   | prints arguments to the console        |
+| ```if```      | standard if conditional      |
+| ```eif```     | else if conditional    |
+| ```ese```      | else conditional      |
+| ```+```   | adds any numbers following it together (separated by underscores)        |
+| ```-```   | subtracts the first number following it from all the numbers following it added together (separated by underscores)       |
+| ```++```  | adds 1 to the first variable that follows it        |
+| ```--```  | subracts 1 to the first variable that follows it        |
+| ```+=```   | a variable is assigned to the following numbers added together (plus the variable)       |
+| ```-=```   | a variable is assigned to its value subtracted from the numbers values added together        |
+| ```* ```  | multiplies any numbers following it together      |
+| ```/```   | divides the second number following it from the first (only accepts 2 numbers)      |
+| ```**```   | squares the number following it       |
+| ```*= ```  | a variable is assigned itself multiplied by the following numbers      |
+| ```/=```   | variable is assigned itself divided by the number immediatly followed        |
+| ```/./```   | takes the square root of any number       |
+| ```>```   | "greater than" comparator       |
+| ```<```   | "less than' comparator        |
+| ```>=```  | "greater than or equal to" comparator         |
+| ```<=```   | "less than or equal to" comparator         |
+| ```<>```   | "equals" comparator        |
+| ```\<num>```   | "is within num of" comparator        |
+| ```><```   | "inequal to" comparator         |
+| ```>num<```  | "is not within num of" comparator        |
+| ```@```   | access the given index in a given list      |
         
 
 
