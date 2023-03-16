@@ -102,14 +102,14 @@ Way #1 (single quotes and commas):
 Way #2 (.add method):
 ```
 /summon x = ''
-x.add|2|
-show|x|
+x.add|. 2 .|
+show|. x .|
 ```
 the console would then print out ``` '2' ```. The   ```list.remove|. .|``` method will also be supported.
 To access from a list, you can use the ```@```symbol to find the value at the given index:
 ```
 /summon x = '1, 2, 3'
-show|x@1|
+show|. x@1 .|
 ```
 This would print ```2``` to the console
 ## Built-In Functions
