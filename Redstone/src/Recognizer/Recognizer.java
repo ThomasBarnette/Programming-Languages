@@ -66,11 +66,7 @@ public class Recognizer {
 
     private void statement(){
         log("statement");
-        if(expressionPending()){
-             expression();
-             end();
-        }
-        else if(assignmentPending()){
+        if(assignmentPending()){
             assignment();
             end();
         } 
@@ -89,6 +85,10 @@ public class Recognizer {
         else if(conditionalStatementPending()) conditionalStatement();
         else if(functionDefinitonPending()) functionDefiniton();
         else if(loopPending()) loop();
+        else if(expressionPending()){
+            expression();
+            end();
+       }
         else error("Expected statement, none found");
     }
 
@@ -218,16 +218,15 @@ public class Recognizer {
         log("dropperFunction");
         consume(DROPPER);
         consume(IDENTIFIER);
-        consume(LINEDOT);
-        consume(DOTLINE);
         consume(OCUBE);
+        statementList();
         returnStatement();
         consume(CCUBE);
     }
 
     private void hopperDropperFunction(){
         log("hopperDropper Function");
-        consume(HOPPER);
+        consume(HOPPER_DROPPER);
         consume(IDENTIFIER);
         consume(LINEDOT);
         parameterList();
@@ -255,7 +254,7 @@ public class Recognizer {
     }
 
     private void ifStatement(){
-        log("isStatement");
+        log("ifStatement");
         consume(IF);
         consume(LINEDOT);
         conditionalExpression();
@@ -294,7 +293,7 @@ public class Recognizer {
 
     private void repeaterLoop(){
         log("repeaterLoop");
-        consume(REPEAT);
+        consume(REPEATER);
         consume(LINEDOT);
         consume(INTEGER);
         consume(DOTLINE);
@@ -315,6 +314,7 @@ public class Recognizer {
         log("returnStatement");
         consume(DROP);
         expression();
+        end();
     }
 
     private void end(){
@@ -414,7 +414,11 @@ public class Recognizer {
     }
 
     private boolean conditionalExpressionPending(){
-       return primaryPending();
+       return primaryPending() && conditonalOperatorPendingNext();
+    }
+
+    private boolean conditonalOperatorPendingNext() {
+        return (checkNext(GREATER_THAN) || checkNext(LESS_THAN) || checkNext(GREATER_THAN_EQUALTO) || checkNext(LESS_THAN_EQUALTO) || checkNext(EQUALITY) || checkNext(WITHIN_EQUALITY) || checkNext(INEQUALITY));
     }
 
     private boolean primaryPending(){
@@ -422,7 +426,7 @@ public class Recognizer {
     }
 
     private boolean assignmentPending(){
-       return check(IDENTIFIER);
+       return check(IDENTIFIER) && checkNext(ASSIGNMENT);
     }
 
     private boolean intitializationPending(){
@@ -438,7 +442,7 @@ public class Recognizer {
     }
 
     private boolean functionCallPending(){
-       return (check(IDENTIFIER) && checkNext(OCUBE));
+       return (check(IDENTIFIER) && checkNext(LINEDOT));
     }
 
     private boolean functionDefinitonPending(){

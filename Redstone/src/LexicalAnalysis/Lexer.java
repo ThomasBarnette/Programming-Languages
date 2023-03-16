@@ -240,9 +240,9 @@ public class Lexer {
         keywords.put("ese", ESE);
         keywords.put("true", TRUE);
         keywords.put("false", FALSE);
+        keywords.put("hopperdropper", HOPPER_DROPPER);
         keywords.put("hopper", HOPPER);
         keywords.put("dropper", DROPPER);
-        keywords.put("hopper dropper", HOPPER_DROPPER);
         keywords.put("End of File", EOF);
         keywords.put("and", AND);
         keywords.put("or", OR);

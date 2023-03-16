@@ -19,7 +19,7 @@
             "request": "launch",
             "mainClass": "Redstone.Redstone",
             "projectName": "Redstone_4e522937",
-            "args": "/Users/thomasbarnette/Documents/Code/GitHub/programming-languages/Redstone/TestInput/testRecognizing.red"
+            "args": "/Users/thomasbarnette/Documents/Code/GitHub/programming-languages/Redstone/TestInput/TestRecognizer/testExpression.red"
         }
     ]
 }
