@@ -21,6 +21,7 @@ unaryExpression ::= unaryOperator primary
 
 naryExpression ::= naryOperator "(" primaryBlock* primary ")"
                  | unaryAssignmentOperator primary
+                 | IDENTIFIER naryAssignmentOperator expression
 
 primaryBlock ::= primary " "
 
@@ -71,7 +72,7 @@ returnStatement ::= "drop" expression
 
 repeaterLoop ::= "repeat" "|." expression ".|" "[" statementList "]"
 
-comparatorLoop ::= "comparator" " " "[" statementList "]"
+comparatorLoop ::= "comparator" "[" statementList "]"
 
 end ::= "܍" 
      | "repeat"
@@ -92,10 +93,11 @@ naryOperator ::= "+"
                  | "*"
                  | "/"
                  | "%"
-                 | "+="
-                 | "-="
-                 | "/="
-                 | "*="
+
+naryAssignmentOperator ::= "+="
+                         | "-="
+                         | "/="
+                         | "*="
 
 conditionalOperator ::= "and"
                       | "or"
