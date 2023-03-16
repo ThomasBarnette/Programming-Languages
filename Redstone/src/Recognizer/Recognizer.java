@@ -12,19 +12,17 @@ public class Recognizer {
     private Lexeme currentLexeme;
     private int nextLexemeIndex;
 
+    private final boolean showLogs = true;
+
     public Recognizer(ArrayList<Lexeme> lexemes){
         this.lexemes = lexemes;
         this.nextLexemeIndex = 0;
         advance();
+        program();
     }
 
-    private Type peek(){
-        return currentLexeme.getType();
-    }
-
-    private Type peekNext(){
-        if(nextLexemeIndex > lexemes.size()) return null;
-        return lexemes.get(nextLexemeIndex).getType();
+    private void log(String heading){
+        if(showLogs) System.out.println("---------" + heading + "----------");
     }
 
     private boolean check(Type type){
@@ -39,7 +37,7 @@ public class Recognizer {
     private Lexeme consume(Type expected){
         if(check(expected)) return advance();
 
-        Redstone.syntaxError("Expected " + expected + " instead found " + currentLexeme, currentLexeme.getLineNumber());
+        Redstone.syntaxError("Expected " + expected + " instead found " + currentLexeme.getType(), currentLexeme.getLineNumber());
         return new Lexeme(currentLexeme.getLineNumber(), ERROR);
     }
 
@@ -57,14 +55,17 @@ public class Recognizer {
 
     // -------- consumption functions ----------
     private void program(){
+        log("program");
         statementList();
     }
 
     private void statementList(){
+        log("statementList");
         while(statementPending()) statement();
     }
 
     private void statement(){
+        log("statement");
         if(expressionPending()){
              expression();
              end();
@@ -88,24 +89,27 @@ public class Recognizer {
         else if(conditionalStatementPending()) conditionalStatement();
         else if(functionDefinitonPending()) functionDefiniton();
         else if(loopPending()) loop();
-        // else error("Expected statement, none found");
+        else error("Expected statement, none found");
     }
 
     private void expression(){
+        log("expression");
         if(unaryExpressionPending()) unaryExpression();
         else if(functionCallPending()) functionCall();
         else if(naryExpressionPending()) naryExpression();
         else if(conditionalExpressionPending()) conditionalExpression();
         else if(primaryPending()) primary();
-        // else error("Expected expression, none found");
+        else error("Expected expression, none found");
     }
 
     private void unaryExpression(){
+        log("unaryExpression");
         unaryOperator();
         primary();
     }
 
     private void naryExpression(){
+        log("naryExpression");
         if(naryOperatorPending()){
             naryOperator();
             consume(LINEDOT);
@@ -117,19 +121,21 @@ public class Recognizer {
             consume(IDENTIFIER);
         }
         else if(naryAssignmentPending()){
-            consume(IDENTIFIER);
             naryAssignmentOperator();
+            consume(IDENTIFIER);
             expression();
         }
         else error("Expected nary expression, found none");
     }
 
     private void primaryBlock() {
+        log("primaryBlock");
         primary();
         consume(CONNECTION);
     }
 
     private void conditionalExpression(){
+        log("conditionalExpression");
         primary();
         conditionalOperator();
         primary();
@@ -140,6 +146,7 @@ public class Recognizer {
     }
 
     private void primary(){
+        log("primary");
         if(check(STRING)) consume(STRING);
         else if(check(IDENTIFIER)) consume(IDENTIFIER);
         else if(check(REAL)) consume(REAL);
@@ -154,35 +161,41 @@ public class Recognizer {
     }
 
     private void assignment(){
+        log("assignment");
         consume(IDENTIFIER);
         consume(ASSIGNMENT);
         expression();
     }
 
     private void intitialization(){
+        log("initialization");
         declaration();
         consume(ASSIGNMENT);
         expression();
     }
 
     private void declaration(){
+        log("declaration");
         consume(SUMMON);
         consume(IDENTIFIER);
     }
 
     private void deletion(){
+        log("deletion");
         consume(KILL);
         consume(IDENTIFIER);
     }
 
     private void functionCall(){
+        log("functionCall");
         consume(IDENTIFIER);
         consume(LINEDOT);
-        parameterList();
+        if(parameterListPending()) parameterList();
         consume(DOTLINE);
     }
 
     private void functionDefiniton(){
+        log("functionDefinition");
         if(hopperFunctionPending()) hopperFunction();
         else if(dropperFunctionPending()) dropperFunction();
         else if(hopperDropperFunctionPending()) hopperDropperFunction();
@@ -190,6 +203,7 @@ public class Recognizer {
     }
 
     private void hopperFunction(){
+        log("hopperFunction");
         consume(HOPPER);
         consume(IDENTIFIER);
         consume(LINEDOT);
@@ -201,6 +215,7 @@ public class Recognizer {
     }
 
     private void dropperFunction(){
+        log("dropperFunction");
         consume(DROPPER);
         consume(IDENTIFIER);
         consume(LINEDOT);
@@ -211,6 +226,7 @@ public class Recognizer {
     }
 
     private void hopperDropperFunction(){
+        log("hopperDropper Function");
         consume(HOPPER);
         consume(IDENTIFIER);
         consume(LINEDOT);
@@ -223,20 +239,23 @@ public class Recognizer {
     }
 
     private void parameterList(){
+        log("parameterList");
         expression();
-        if(peek() == COMMA){
+        if(check(COMMA)){
             consume(COMMA);
             parameterList();
         }
     }
 
     private void conditionalStatement(){
+        log("condtionalStatement");
         ifStatement();
         while(eifStatementPending()) eifStatement();
         if(eseStatementPending()) eseStatement();
     }
 
     private void ifStatement(){
+        log("isStatement");
         consume(IF);
         consume(LINEDOT);
         conditionalExpression();
@@ -247,6 +266,7 @@ public class Recognizer {
     }
 
     private void eifStatement(){
+        log("eifStatement");
         consume(EIF);
         consume(LINEDOT);
         conditionalExpression();
@@ -257,6 +277,7 @@ public class Recognizer {
     }
 
     private void eseStatement(){
+        log("eseStatement");
         consume(ESE);
         consume(OCUBE);
         statementList();
@@ -264,6 +285,7 @@ public class Recognizer {
     }
 
     private void loop(){
+        log("loop");
         if(repeaterLoopPending()) repeaterLoop();
         else if(comparatorLoopPending()) comparatorLoop();
         else error("Expected loop, found none");
@@ -271,6 +293,7 @@ public class Recognizer {
 
 
     private void repeaterLoop(){
+        log("repeaterLoop");
         consume(REPEAT);
         consume(LINEDOT);
         consume(INTEGER);
@@ -281,6 +304,7 @@ public class Recognizer {
     }
 
     private void comparatorLoop(){
+        log("comparatorLoop");
         consume(COMPARATOR);
         consume(OCUBE);
         statementList();
@@ -288,199 +312,204 @@ public class Recognizer {
     }
 
     private void returnStatement(){
+        log("returnStatement");
         consume(DROP);
         expression();
     }
 
     private void end(){
+        log("end");
         if(currentLexeme.getLineNumber() % 12 != 0) consume(REDSTONE);
         else consume(REPEAT);
     }
 
     private void booleanLiteral(){
-        if(peek() == TRUE) consume(TRUE);
-        else if(peek() == FALSE) consume(FALSE);
+        log("booleanLiteral");
+        if(check(TRUE)) consume(TRUE);
+        else if(check(FALSE)) consume(FALSE);
         else error("Expected boolean literal, found none");
     }
 
     private void unaryAssignmentOperator(){
-        if(peek() == PLUS_PLUS) consume(PLUS_PLUS);
-        else if(peek() == MINUS_MINUS) consume(MINUS_MINUS);
+        log("unaryAssignmentOperator");
+        if(check(PLUS_PLUS)) consume(PLUS_PLUS);
+        else if(check(MINUS_MINUS)) consume(MINUS_MINUS);
         else error("Expected unary assignment operator, found none");
     }
 
     private void unaryOperator(){
-        if(peek() == NOT) consume(NOT);
-        else if(peek() == TIMES_TIMES) consume(TIMES_TIMES);
-        else if(peek() == SQRT) consume(SQRT);
-        else if(peek() == MOD_MOD) consume(MOD_MOD);
+        log("unaryOperator");
+        if(check(NOT)) consume(NOT);
+        else if(check(TIMES_TIMES)) consume(TIMES_TIMES);
+        else if(check(SQRT)) consume(SQRT);
+        else if(check(MOD_MOD)) consume(MOD_MOD);
         else error("Expected unary operator, found none");
     }
 
     private void naryOperator(){
-        if(peek() == PLUS) consume(PLUS);
-        else if(peek() == TIMES) consume(TIMES);
-        else if(peek() == MINUS) consume(MINUS);
-        else if(peek() == SLASH) consume(SLASH);
-        else if(peek() == MOD) consume(MOD);
+        log("naryOperator");
+        if(check(PLUS)) consume(PLUS);
+        else if(check(TIMES)) consume(TIMES);
+        else if(check(MINUS)) consume(MINUS);
+        else if(check(SLASH)) consume(SLASH);
+        else if(check(MOD)) consume(MOD);
         else error("Expected nary operator, found none");
     }
 
     private void naryAssignmentOperator(){
-        if(peek() == PLUS_EQUALS) consume(PLUS_EQUALS);
-        else if(peek() == TIMES_EQUALS) consume(TIMES_EQUALS);
-        else if(peek() == MINUS_EQUALS) consume(MINUS_EQUALS);
-        else if(peek() == SLASH_EQUALS) consume(SLASH_EQUALS);
+        log("naryAssignmentOperator");
+        if(check(PLUS_EQUALS)) consume(PLUS_EQUALS);
+        else if(check(TIMES_EQUALS)) consume(TIMES_EQUALS);
+        else if(check(MINUS_EQUALS)) consume(MINUS_EQUALS);
+        else if(check(SLASH_EQUALS)) consume(SLASH_EQUALS);
         else error("Expected nary assignment operator, found none");
     }
 
     private void conditionalOperator(){
-        if(peek() == EQUALITY) consume(EQUALITY);
-        else if(peek() == INEQUALITY) consume(INEQUALITY);
-        else if(peek() == GREATER_THAN) consume(GREATER_THAN);
-        else if(peek() == LESS_THAN) consume(LESS_THAN);
-        else if(peek() == GREATER_THAN_EQUALTO) consume(GREATER_THAN_EQUALTO);
-        else if(peek() == LESS_THAN_EQUALTO) consume(LESS_THAN_EQUALTO);
-        else if(peek() == WITHIN_EQUALITY) consume(WITHIN_EQUALITY);
+        log("conditionalOperator");
+        if(check(EQUALITY)) consume(EQUALITY);
+        else if(check(INEQUALITY)) consume(INEQUALITY);
+        else if(check(GREATER_THAN)) consume(GREATER_THAN);
+        else if(check(LESS_THAN)) consume(LESS_THAN);
+        else if(check(GREATER_THAN_EQUALTO)) consume(GREATER_THAN_EQUALTO);
+        else if(check(LESS_THAN_EQUALTO)) consume(LESS_THAN_EQUALTO);
+        else if(check(WITHIN_EQUALITY)) consume(WITHIN_EQUALITY);
         else error("Expected boolean operator, found none");
     }
 
     private void conditionalLogicOperator(){
-        if(peek() == AND) consume(AND);
-        else if(peek() == OR) consume(OR);
+        log("conditionalLogOperator");
+        if(check(AND)) consume(AND);
+        else if(check(OR)) consume(OR);
         else error("Expected logic operator, found none");
     }
 
 
     // -------- pending functions  -------------
     private boolean statementPending(){
-        return false;
+        return (expressionPending() || assignmentPending() || intitializationPending() || deletionPending() 
+                || functionDefinitonPending() || declarationPending() || conditionalStatementPending() 
+                || loopPending());
     }
 
     private boolean expressionPending(){
-       //TODO
-       return false;
+       return (primaryPending() || unaryExpressionPending() || functionCallPending() || naryExpressionPending() || conditionalExpressionPending());
     }
 
     private boolean unaryExpressionPending(){
-       //TODO
-       return false;
+       return (unaryOperatorPending());
+    }
+
+    private boolean unaryOperatorPending() {
+        return (check(NOT) || check(TIMES_TIMES) || check(SQRT) || check(MOD_MOD));
     }
 
     private boolean naryExpressionPending(){
-       //TODO
-       return false;
+       return (naryOperatorPending() || unaryAssignmentOperatorPending() || naryAssignmentOperatorPending());
+
+    }
+
+    private boolean naryAssignmentOperatorPending() {
+        return(check(PLUS_EQUALS) || check(SLASH_EQUALS) || check(MINUS_EQUALS) || check(TIMES_EQUALS));
     }
 
     private boolean conditionalExpressionPending(){
-       //TODO
-       return false;
+       return primaryPending();
     }
 
     private boolean primaryPending(){
-       //TODO
-       return false;
+       return(check(IDENTIFIER) || check(BOOLEAN) || check(STRING) || check(INTEGER) || check(REAL) || check(OCUBE) || functionCallPending());
     }
 
     private boolean assignmentPending(){
-       //TODO
-       return false;
+       return check(IDENTIFIER);
     }
 
     private boolean intitializationPending(){
-       //TODO
-       return false;
+       return declarationPending() && (lexemes.size() > nextLexemeIndex+1 && lexemes.get(nextLexemeIndex+1).getType() == ASSIGNMENT);
     }
 
     private boolean declarationPending(){
-       //TODO
-       return false;
+       return check(SUMMON);
     }
 
     private boolean deletionPending(){
-       //TODO
-       return false;
+       return check(KILL);
     }
 
     private boolean functionCallPending(){
-       //TODO
-       return false;
+       return (check(IDENTIFIER) && checkNext(OCUBE));
     }
 
     private boolean functionDefinitonPending(){
-       //TODO
-       return false;
+       return (hopperFunctionPending() || dropperFunctionPending() || hopperDropperFunctionPending());
     }
 
     private boolean hopperFunctionPending(){
-       //TODO
-       return false;
+       return check(HOPPER);
     }
 
     private boolean dropperFunctionPending(){
-       //TODO
-       return false;
+       return check(DROPPER);
     }
 
     private boolean hopperDropperFunctionPending(){
-       //TODO
-       return false;
+       return check(HOPPER_DROPPER);
     }
 
     private boolean conditionalStatementPending(){
-       //TODO
-       return false;
+       return (ifStatementPending());
+    }
+
+    private boolean ifStatementPending(){
+        return check(IF);
     }
 
     private boolean eifStatementPending(){
-       //TODO
-       return false;
+       return check(EIF);
     }
 
     private boolean eseStatementPending(){
-       //TODO
-       return false;
+       return check(ESE);
     }
 
     private boolean loopPending(){
-       //TODO
-       return false;
+       return (comparatorLoopPending() || repeaterLoopPending());
     }
 
     private boolean comparatorLoopPending(){
-       //TODO
-       return false;
+       return check(COMPARATOR);
     }
 
     private boolean repeaterLoopPending(){
-        //TODO
-        return false;
+        return check(REPEATER);
      } 
 
     private boolean booleanLiteralPending(){
-       //TODO
-       return false;
+       return (check(TRUE) || check(FALSE));
     }
 
     private boolean unaryAssignmentOperatorPending(){
-       //TODO
-       return false;
+       return (check(PLUS_PLUS) || check(MINUS_MINUS));
     }
 
     private boolean naryOperatorPending(){
-       //TODO
-       return false;
+        return(check(PLUS) || check(MINUS) || check(SLASH) || check(TIMES) || check(MOD));
     }
 
     private boolean primaryBlockPending() {
-        return false;
+        return (primaryPending() && checkNext(CONNECTION));
     }
 
     private boolean naryAssignmentPending() {
-        return false;
+        return(check(PLUS_EQUALS) || check(MINUS_EQUALS) || check(TIMES_EQUALS) || check(SLASH_EQUALS));
     }
 
     private boolean conditinoalLogicOperatorPending() {
-        return false;
+        return (check(AND) || check(OR));
+    }
+
+    private boolean parameterListPending() {
+        return expressionPending();
     }
 }

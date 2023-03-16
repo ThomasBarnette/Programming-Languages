@@ -21,9 +21,11 @@ unaryExpression ::= unaryOperator primary
 
 naryExpression ::= naryOperator "(" primaryBlock* primary ")"
                  | unaryAssignmentOperator primary
-                 | IDENTIFIER naryAssignmentOperator expression
+                 | naryAssignmentOperator IDENTIFIER expression
 
-primaryBlock ::= primary " "
+primaryBlock ::= primary connection
+
+connection ::= "~"
 
 conditionalExpression ::= primary conditionalOperator primary
 

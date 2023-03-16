@@ -101,6 +101,8 @@ public class Lexer {
                 return new Lexeme(lineNumber, CONNECTION);
             case ',':
                 return new Lexeme(lineNumber, COMMA);
+            case '—': 
+                return new Lexeme(lineNumber, LONG_DASH);
             case '|':
                 if(match('.')) return new Lexeme(lineNumber, LINEDOT);
                 else Redstone.syntaxError("Invalid token \"|\" . Did you mean \"|.\"?", lineNumber);

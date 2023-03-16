@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Lexer;
 
+import Recognizer.Recognizer;
+
 public class Redstone {
     private static final ArrayList<String> syntaxErrorMessages = new ArrayList<>();
     private static final ArrayList<String> runtimeErrorMessages = new ArrayList<>();
+
+    private static final boolean annoyingComments = false;
 
     public static void main(String[] args) throws IOException{
         try{
@@ -37,7 +41,8 @@ public class Redstone {
         //Lexing
         Lexer lexer = new Lexer(source);
         ArrayList<Lexeme> lexemes = lexer.lex();
-        System.out.println(lexemes);
+        // System.out.println(lexemes);
+        Recognizer recognizer = new Recognizer(lexemes);
 
         printErrors();
     }
@@ -75,6 +80,8 @@ public class Redstone {
     }
 
     private static String randomMotivationToCodeBetter(){
+        if(!annoyingComments) return "";
+
         int random = (int)(Math.random()*10)+1;
         if(random == 1) return "You idiot!!! ";
         if(random == 2) return "Obviously ";
