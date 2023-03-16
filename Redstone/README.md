@@ -27,7 +27,7 @@ All ```dropper``` functions will return values either implicitly (using the last
 
 Here is an example of a ```hopper dropper``` function and a ```dropper``` function:
 ```
-hopper dropper prod|x, y|[
+hopper dropper prod|. x, y .|[
    drop *x_y
 ]
 
@@ -42,12 +42,12 @@ There will be two types of looping supported in redstone.
 The first type is the ```repeater``` loop, which will vaguely resemble a ```for``` loop. Because repeaters have 4 tick settings in minecraft, the only parameter in repeater loops will be an Integer between 1-4 that will determine how many times the loop will run. The tick will increase by 1 until it is the value as the paramter. Heres an example of nested repeater loops in the redstone language:
 ```
 /summon count = 0
-repeater|tick=4| [ 
-  repeater|t = 2| [
+repeater|. 4 .| [ 
+  repeater|. 2 .| [
   count++
   ]
 ]
-console.show|count|
+console.show|. count .|
 ```
 The expected output of this snippet would be ```8```.
 
@@ -55,7 +55,7 @@ The second type of iteration supported is the ```comparator``` loop, which is si
 ```
 /summon count = 0
 comparator [ 
-  if(count <> 10) [ 
+  if|. count <> 10 .| [ 
     mine 
    ]  
    count++
@@ -68,19 +68,20 @@ This loop would run 10 times up to the point where count = 10, at which point it
   Condional logic will be done by spelling out ```or``` and ```and```, and will follow the order of operations using lines ```||``` as parentheses
 
 ## Operators
-//TODO, I have no idea what I can do creatively here hopefully something will come to me later
-### Unary
+The redstone language is prefixed, so there wont be tradiational binary operators but rather "nth-ary" operators with an undefined amount of terms.
+### Unary assignment
 These are mostly self explainatory:
-```+, -, ++, --, +=, -=```
-### Binary
-```*, /, ^ (exponent), *-, /=, ** (number squared)```
-### Ternary
-Something to think about including
+``` ++, --```
+### "Nth-ary"
+```+, -, *, /```
+##"Nth-ary" assignment
+```*-, /=, +=, -=```
+
 ### Others?
-Something to think about including
+```**, /./, %%```
+These are number squared, square root of a number, and number of digits in a number respectivly.
 
 ## Comparators
-I'm also at a bit of a loss here, I've put some random stuff below but hopefully I can come up with something better
 ### Magnitude
 Can support ```>```, ```<```, ```>=```, and ```<=```
 ### Equality
@@ -89,14 +90,6 @@ Supports ```<>``` for equals, ```><``` for inequals, and has a unique feature:
 number <value> number 
 ```
 This checks if the numbers are within value from eachother.
-Another feature is:
-```
-numver >value< number
-```
-and this checks to see if a number is not withing the given range of another number.
-### Others?
-//TODO 
-Something to consider thinking about including.
 
 ## Collections
 ### Arrays
@@ -162,10 +155,10 @@ All priting to the console will be done through the ```show|. .|``` function
 
 
 ## Backlog/Thoughts
-- Maybe change looping to mimic a redstone circut slightly better
-- Add new and potentially better fitting operators
-- Think about adding new/better themed comparators and operators
-- Changed condionals to be better themed
+[comment]: <> (Maybe change looping to mimic a redstone circut slightly better)
+[comment]: <> (Add new and potentially better fitting operators)
+[comment]: <> (Think about adding new/better themed comparators and operators)
+[comment]: <> (Change condionals to be better themed)
 
   
   Created in Spring 2023 by Thomas Barnette 
