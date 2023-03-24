@@ -11,6 +11,10 @@ public class Lexeme {
     private Boolean boolValue;
 
     //-----------Constructors-------------
+    public Lexeme(){
+        this.type = null;
+    }
+
     public Lexeme(int lineNumber, Type type) {
         this.lineNumber = lineNumber;
         this.type = type;
@@ -71,5 +75,22 @@ public class Lexeme {
         return ("\n\nType " + type +
         " on line number " + lineNumber +
         "\n value: " + value);
+    }
+
+    public String toValueOnlyString(){
+        String value = "EMPTY";
+        if(getIntValue() != null) value = getIntValue().toString();
+        if(getRealValue() != null) value = getRealValue().toString();
+        if(getBoolValue() != null) value = getBoolValue().toString();
+        if(getStringValue() != null) value = getStringValue();
+        return value;
+    }
+
+    public boolean equals(Lexeme other){
+        if(type != other.getType()) return false;;
+        if(realValue != null && realValue.equals(other.realValue)) return true;
+        if(stringValue != null && stringValue.equals(other.stringValue)) return true;
+        if(intValue != null && intValue.equals(other.intValue)) return true;
+        return(boolValue != null && boolValue.equals(other.boolValue));
     }
 }

@@ -20,7 +20,7 @@ expression ::= unaryExpression
 unaryExpression ::= unaryOperator primary
 
 naryExpression ::= naryOperator "(" primaryBlock* primary ")"
-                 | unaryAssignmentOperator primary
+                 | unaryAssignmentOperator IDENTIFIER
                  | naryAssignmentOperator IDENTIFIER expression
 
 primaryBlock ::= primary connection
