@@ -1,4 +1,7 @@
 package LexicalAnalysis;
+
+import java.util.*;
+
 public class Lexeme {
     //Instance Variables
     private final Type type;
@@ -9,10 +12,15 @@ public class Lexeme {
     private Double realValue;
     private Integer intValue;
     private Boolean boolValue;
+    private ArrayList<Lexeme> childeren;
 
     //-----------Constructors-------------
     public Lexeme(){
         this.type = null;
+    }
+
+    public Lexeme(Type type){
+        this.type = type;
     }
 
     public Lexeme(int lineNumber, Type type) {
@@ -65,6 +73,10 @@ public class Lexeme {
 
     public void setString(String stringValue) {  this.stringValue = stringValue; }
 
+    public void addChild(Lexeme child) { this.childeren.add(child); }
+
+    public void addAll(ArrayList<Lexeme> childeren) { this.childeren.addAll(childeren); }
+
     //--------toString-----------
     public String toString() {
         String value = "EMPTY";
@@ -93,4 +105,30 @@ public class Lexeme {
         if(intValue != null && intValue.equals(other.intValue)) return true;
         return(boolValue != null && boolValue.equals(other.boolValue));
     }
+
+    //Printing parse trees
+    public void printAsParseTree(){
+        System.out.println(getPrintableTree(this, 0));
+    }
+
+    private String getPrintableTree(Lexeme root, int level ){
+        if(root == null) return("empty parse tree!");
+        StringBuilder treeString = new StringBuilder(root.toString());
+
+        StringBuilder spacer = new StringBuilder("\n");
+        spacer.append("\t".repeat(level));
+
+        int numChilderen = root.childeren.size();
+        if(numChilderen > 0){
+            treeString.append("(with ").append(numChilderen).append(numChilderen == 1 ? "Child ): " : "childeren): ");
+            for(int i = 0; i<numChilderen; i++){
+                Lexeme child = root.childeren.get(i);
+                treeString.append(spacer).append("(").append(i+1).append(") ").append(getPrintableTree(child, level+1));
+            }
+        }
+        return treeString.toString();
+    }
+
+
+
 }

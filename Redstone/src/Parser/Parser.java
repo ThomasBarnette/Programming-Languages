@@ -1,4 +1,4 @@
-package Recognizer;
+package Parser;
 
 import java.util.ArrayList;
 import LexicalAnalysis.Lexeme;
@@ -7,18 +7,17 @@ import LexicalAnalysis.Type;
 import static LexicalAnalysis.Type.*;
 import Redstone.Redstone;
 
-public class Recognizer {
+public class Parser {
     private final ArrayList<Lexeme> lexemes;
     private Lexeme currentLexeme;
     private int nextLexemeIndex;
 
     private final boolean showLogs = true;
 
-    public Recognizer(ArrayList<Lexeme> lexemes){
+    public Parser(ArrayList<Lexeme> lexemes){
         this.lexemes = lexemes;
         this.nextLexemeIndex = 0;
         advance();
-        program();
     }
 
     private void log(String heading){
@@ -48,239 +47,272 @@ public class Recognizer {
         return toReturn;
     }
 
-    private void error(String string) {
+    private Lexeme error(String string) {
         Redstone.syntaxError(string, currentLexeme.getLineNumber());
+        return new Lexeme(ERROR);
     }
 
 
     // -------- consumption functions ----------
-    private void program(){
+    public Lexeme program(){
         log("program");
-        statementList();
+        if(statementListPending()) return statementList();
+        else return new Lexeme(EMPTY_PROGRAM);
     }
 
-    private void statementList(){
+    private Lexeme statementList(){
         log("statementList");
-        while(statementPending()) statement();
+        ArrayList<Lexeme> statements = new ArrayList<>();
+        Lexeme statementList = new Lexeme();
+        while(statementPending()) statements.add(statement());
+        statementList.addAll(statements);
+        return statementList;
     }
 
-    private void statement(){
+    private Lexeme statement(){
         log("statement");
+        Lexeme statement;
         if(assignmentPending()){
-            assignment();
+            statement = assignment();
             end();
         } 
         else if(intitializationPending()){
-             intitialization();
-             end();
+            statement = intitialization();
+            end();
         }
         else if(declarationPending()){
-             declaration();
+             statement = declaration();
              end();
         }
         else if(deletionPending()){
-             deletion();
+             statement = deletion();
              end();
         }
-        else if(conditionalStatementPending()) conditionalStatement();
-        else if(functionDefinitonPending()) functionDefiniton();
-        else if(loopPending()) loop();
+        else if(conditionalStatementPending()) statement = conditionalStatement();
+        else if(functionDefinitonPending()) statement = functionDefiniton();
+        else if(loopPending()) statement = loop();
         else if(expressionPending()){
-            expression();
+            statement = expression();
             end();
        }
-        else error("Expected statement, none found");
+        else statement = error("Expected statement, none found");
+        return statement;
     }
 
-    private void expression(){
+    private Lexeme expression(){
         log("expression");
-        if(unaryExpressionPending()) unaryExpression();
-        else if(functionCallPending()) functionCall();
-        else if(naryExpressionPending()) naryExpression();
-        else if(conditionalExpressionPending()) conditionalExpression();
-        else if(primaryPending()) primary();
-        else error("Expected expression, none found");
+        if(unaryExpressionPending()) return unaryExpression();
+        else if(functionCallPending()) return functionCall();
+        else if(naryExpressionPending()) return naryExpression();
+        else if(conditionalExpressionPending()) return conditionalExpression();
+        else if(primaryPending()) return primary();
+        else return error("Expected expression, none found");
     }
 
-    private void unaryExpression(){
+    private Lexeme unaryExpression(){
         log("unaryExpression");
-        unaryOperator();
-        primary();
+        Lexeme root = unaryOperator();
+        root.addChild(primary());
+        return root;
     }
 
-    private void naryExpression(){
+    private Lexeme naryExpression(){
         log("naryExpression");
+        Lexeme root;
         if(naryOperatorPending()){
-            naryOperator();
-            while(primaryBlockPending()) primaryBlock();
-            primary();
+            root = naryOperator();
+            ArrayList<Lexeme> primaryBlocks = new ArrayList<>();
+            while(primaryBlockPending()) root.addChild(primaryBlock());
+            root.addAll(primaryBlocks);
+            root.addChild(primary());
         }
         else if(unaryAssignmentOperatorPending()){
-            unaryAssignmentOperator();
-            consume(IDENTIFIER);
+            root = unaryAssignmentOperator();
+            root.addChild(consume(IDENTIFIER));
         }
         else if(naryAssignmentPending()){
-            naryAssignmentOperator();
-            consume(IDENTIFIER);
-            expression();
+            root = naryAssignmentOperator();
+            root.addChild(consume(IDENTIFIER));
+            root.addChild(expression());
         }
         else error("Expected nary expression, found none");
     }
 
-    private void primaryBlock() {
+    private Lexeme primaryBlock() {
         log("primaryBlock");
-        primary();
+        Lexeme primary;
+        primary = primary();
         consume(CONNECTION);
+        return primary;
     }
 
-    private void conditionalExpression(){
+    private Lexeme conditionalExpression(){
         log("conditionalExpression");
-        primary();
-        conditionalOperator();
-        primary();
+        ArrayList<Lexeme> childeren = new ArrayList<>();
+        childeren.add(primary());
+        Lexeme root = conditionalOperator();
+        childeren.add(primary());
+        root.addAll(childeren);
         if(conditinoalLogicOperatorPending()){
-            conditionalLogicOperator();
-            conditionalExpression();
+            root.addChild(conditionalLogicOperator());
+            root.addChild(conditionalExpression());
         }
     }
 
-    private void primary(){
+    private Lexeme primary(){
         log("primary");
-        if(check(STRING)) consume(STRING);
-        else if(check(IDENTIFIER)) consume(IDENTIFIER);
-        else if(check(REAL)) consume(REAL);
-        else if(check(INTEGER)) consume(Type.INTEGER);
-        else if(functionCallPending()) functionCall();
-        else if(booleanLiteralPending()) booleanLiteral();
+        if(check(STRING)) return consume(STRING);
+        else if(check(IDENTIFIER)) return consume(IDENTIFIER);
+        else if(check(REAL)) return consume(REAL);
+        else if(check(INTEGER)) return consume(INTEGER);
+        else if(functionCallPending()) return functionCall();
+        else if(booleanLiteralPending()) return booleanLiteral();
         else if(check(LINEDOT)) {
             consume(LINEDOT);
-            expression();
+            return expression();
             consume(DOTLINE);
         }
         else error("Expected primary, found none");
     }
 
-    private void assignment(){
+    private Lexeme assignment(){
         log("assignment");
-        consume(IDENTIFIER);
-        consume(ASSIGNMENT);
-        expression();
+        Lexeme iden = consume(IDENTIFIER);
+        Lexeme root = consume(ASSIGNMENT);
+        root.addChild(iden);
+        root.addChild(expression());
+        return root;
     }
 
-    private void intitialization(){
+    private Lexeme intitialization(){
         log("initialization");
-        declaration();
-        consume(ASSIGNMENT);
-        expression();
+        Lexeme dec = declaration();
+        Lexeme root = consume(ASSIGNMENT);
+        root.addChild(dec);
+        root.addChild(expression());
+        return root;
     }
 
-    private void declaration(){
+    private Lexeme declaration(){
         log("declaration");
-        consume(SUMMON);
-        consume(IDENTIFIER);
+        Lexeme root = consume(SUMMON);
+        root.addChild(consume(IDENTIFIER));
+        return root;
     }
 
-    private void deletion(){
+    private Lexeme deletion(){
         log("deletion");
-        consume(KILL);
-        consume(IDENTIFIER);
+        Lexeme root = consume(KILL);
+        root.addChild(consume(IDENTIFIER));
+        return root;
     }
 
-    private void functionCall(){
+    private Lexeme functionCall(){
         log("functionCall");
-        consume(IDENTIFIER);
+        Lexeme func = new Lexeme(FUNCTION_CALL);
+        func.addChild(consume(IDENTIFIER));
         consume(LINEDOT);
-        if(parameterListPending()) parameterList();
+        if(parameterListPending()) func.addChild(parameterList());
         consume(DOTLINE);
     }
 
-    private void functionDefiniton(){
+    private Lexeme functionDefiniton(){
         log("functionDefinition");
-        if(hopperFunctionPending()) hopperFunction();
-        else if(dropperFunctionPending()) dropperFunction();
-        else if(hopperDropperFunctionPending()) hopperDropperFunction();
-        else error("Expected function call, found none");
+        if(hopperFunctionPending()) return hopperFunction();
+        else if(dropperFunctionPending()) return dropperFunction();
+        else if(hopperDropperFunctionPending()) return hopperDropperFunction();
+        else return error("Expected function call, found none");
     }
 
-    private void hopperFunction(){
+    private Lexeme hopperFunction(){
         log("hopperFunction");
-        consume(HOPPER);
-        consume(IDENTIFIER);
+        Lexeme root = consume(HOPPER);
+        root.addChild(consume(IDENTIFIER));
         consume(LINEDOT);
-        parameterList();
+        root.addChild(parameterList());
         consume(DOTLINE);
         consume(OCUBE);
-        statementList();
+        root.addChild(statementList());
         consume(CCUBE);
+        return root;
     }
 
-    private void dropperFunction(){
+    private Lexeme dropperFunction(){
         log("dropperFunction");
-        consume(DROPPER);
-        consume(IDENTIFIER);
+        Lexeme root = consume(DROPPER);
+        root.addChild(consume(IDENTIFIER));
         consume(OCUBE);
-        statementList();
-        returnStatement();
+        root.addChild(statementList());
+        root.addChild(returnStatement());
         consume(CCUBE);
+        return root;
     }
 
-    private void hopperDropperFunction(){
+    private Lexeme hopperDropperFunction(){
         log("hopperDropper Function");
-        consume(HOPPER_DROPPER);
-        consume(IDENTIFIER);
+        Lexeme root = consume(HOPPER_DROPPER);
+        root.addChild(consume(IDENTIFIER));
         consume(LINEDOT);
-        parameterList();
+        root.addChild(parameterList());
         consume(DOTLINE);
         consume(OCUBE);
-        statementList();
-        returnStatement();
+        root.addChild(statementList());
+        root.addChild(returnStatement());
         consume(CCUBE);
+        return root;
     }
 
-    private void parameterList(){
+    private Lexeme parameterList(){
         log("parameterList");
-        expression();
+        Lexeme root = new Lexeme(PARAM_LIST);
+        root.addChild(expression());
         if(check(COMMA)){
             consume(COMMA);
-            parameterList();
+            root.addChild(parameterList());
         }
+        return root;
     }
 
-    private void conditionalStatement(){
+    private Lexeme conditionalStatement(){
         log("condtionalStatement");
-        ifStatement();
-        while(eifStatementPending()) eifStatement();
-        if(eseStatementPending()) eseStatement();
+        Lexeme root = new Lexeme(CONDITIONAL_BLOCK);
+        root.addChild(ifStatement());
+        while(eifStatementPending()) root.addChild(eifStatement());
+        if(eseStatementPending()) root.addChild(eseStatement());
+        return root;
     }
 
-    private void ifStatement(){
+    private Lexeme ifStatement(){
         log("ifStatement");
-        consume(IF);
+        Lexeme root = consume(IF);
         consume(LINEDOT);
-        conditionalExpression();
+        root.addChild(conditionalExpression());
         consume(DOTLINE);
         consume(OCUBE);
-        statementList();
+        root.addChild(statementList());
         consume(CCUBE);
+        return root;
     }
 
-    private void eifStatement(){
+    private Lexeme eifStatement(){
         log("eifStatement");
-        consume(EIF);
+        Lexeme root = consume(EIF);
         consume(LINEDOT);
-        conditionalExpression();
+        root.addChild(conditionalExpression());
         consume(DOTLINE);
         consume(OCUBE);
-        statementList();
+        root.addChild(statementList());
         consume(CCUBE);
+        return root;
     }
 
-    private void eseStatement(){
+    private Lexeme eseStatement(){
         log("eseStatement");
-        consume(ESE);
+        Lexeme root = consume(ESE);
         consume(OCUBE);
-        statementList();
+        root.addChild(statementList());
         consume(CCUBE);
+        return root;
     }
 
     private void loop(){
@@ -386,6 +418,11 @@ public class Recognizer {
 
 
     // -------- pending functions  -------------
+
+    private boolean statementListPending() {
+        return statementPending();
+    }
+
     private boolean statementPending(){
         return (expressionPending() || assignmentPending() || intitializationPending() || deletionPending() 
                 || functionDefinitonPending() || declarationPending() || conditionalStatementPending() 

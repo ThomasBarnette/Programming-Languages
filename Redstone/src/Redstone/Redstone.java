@@ -7,8 +7,7 @@ import java.util.ArrayList;
 
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Lexer;
-
-import Recognizer.Recognizer;
+import Parser.Parser;
 
 public class Redstone {
     private static final ArrayList<String> syntaxErrorMessages = new ArrayList<>();
@@ -41,8 +40,10 @@ public class Redstone {
         //Lexing
         Lexer lexer = new Lexer(source);
         ArrayList<Lexeme> lexemes = lexer.lex();
-        // System.out.println(lexemes);
-        Recognizer recognizer = new Recognizer(lexemes);
+        // Parsing
+        Parser parser = new Parser(lexemes);
+        Lexeme programParseTree = parser.program();
+        programParseTree.printAsParseTree();
 
         printErrors();
     }
