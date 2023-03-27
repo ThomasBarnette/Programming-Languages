@@ -12,7 +12,7 @@ public class Lexeme {
     private Double realValue;
     private Integer intValue;
     private Boolean boolValue;
-    private ArrayList<Lexeme> childeren;
+    private ArrayList<Lexeme> children = new ArrayList<>();
 
     //-----------Constructors-------------
     public Lexeme(){
@@ -73,9 +73,9 @@ public class Lexeme {
 
     public void setString(String stringValue) {  this.stringValue = stringValue; }
 
-    public void addChild(Lexeme child) { this.childeren.add(child); }
+    public void addChild(Lexeme child) { this.children.add(child); }
 
-    public void addAll(ArrayList<Lexeme> childeren) { this.childeren.addAll(childeren); }
+    public void addAll(ArrayList<Lexeme> childeren) { this.children.addAll(childeren); }
 
     //--------toString-----------
     public String toString() {
@@ -84,9 +84,10 @@ public class Lexeme {
         if(getRealValue() != null) value = getRealValue().toString();
         if(getBoolValue() != null) value = getBoolValue().toString();
         if(getStringValue() != null) value = getStringValue();
-        return ("\n\nType " + type +
+        return !value.equals("EMPTY") ? ("\n\nType " + type +
         " on line number " + lineNumber +
-        "\n value: " + value);
+        "\n value: " + value) : ("\n\nType " + type +
+        " on line number " + lineNumber);
     }
 
     public String toValueOnlyString(){
@@ -107,28 +108,29 @@ public class Lexeme {
     }
 
     //Printing parse trees
-    public void printAsParseTree(){
+    public void printAsParseTree() {
         System.out.println(getPrintableTree(this, 0));
-    }
-
-    private String getPrintableTree(Lexeme root, int level ){
-        if(root == null) return("empty parse tree!");
-        StringBuilder treeString = new StringBuilder(root.toString());
+     }
+     
+     private static String getPrintableTree(Lexeme root, int level) {
+        if (root == null) return "(Empty ParseTree)";
+        StringBuilder treeString = new StringBuilder(root.toString());     
 
         StringBuilder spacer = new StringBuilder("\n");
-        spacer.append("\t".repeat(level));
+        spacer.append("\t".repeat(level)); 
+        System.out.println(level);
 
-        int numChilderen = root.childeren.size();
-        if(numChilderen > 0){
-            treeString.append("(with ").append(numChilderen).append(numChilderen == 1 ? "Child ): " : "childeren): ");
-            for(int i = 0; i<numChilderen; i++){
-                Lexeme child = root.childeren.get(i);
-                treeString.append(spacer).append("(").append(i+1).append(") ").append(getPrintableTree(child, level+1));
+
+        int numChildren = root.children.size();  
+        if (numChildren > 0) {
+            treeString.append(" (with ").append(numChildren).append(numChildren == 1 ? " child):" : " children):");
+            for (int i = 0; i < numChildren; i++) {
+                Lexeme child = root.children.get(i);
+                treeString
+                        .append(spacer).append("(").append(i + 1).append(") ")
+                        .append(getPrintableTree(child, level + 1));
             }
         }
         return treeString.toString();
-    }
-
-
-
+     }
 }
