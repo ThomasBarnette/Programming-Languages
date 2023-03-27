@@ -125,17 +125,20 @@ public class Parser {
             while(primaryBlockPending()) root.addChild(primaryBlock());
             root.addAll(primaryBlocks);
             root.addChild(primary());
+            return root;
         }
         else if(unaryAssignmentOperatorPending()){
             root = unaryAssignmentOperator();
             root.addChild(consume(IDENTIFIER));
+            return root;
         }
         else if(naryAssignmentPending()){
             root = naryAssignmentOperator();
             root.addChild(consume(IDENTIFIER));
             root.addChild(expression());
+            return root;
         }
-        else error("Expected nary expression, found none");
+        else return error("Expected nary expression, found none");
     }
 
     private Lexeme primaryBlock() {
@@ -157,6 +160,7 @@ public class Parser {
             root.addChild(conditionalLogicOperator());
             root.addChild(conditionalExpression());
         }
+        return root;
     }
 
     private Lexeme primary(){
@@ -169,10 +173,11 @@ public class Parser {
         else if(booleanLiteralPending()) return booleanLiteral();
         else if(check(LINEDOT)) {
             consume(LINEDOT);
-            return expression();
+            Lexeme expr = expression();
             consume(DOTLINE);
+            return expr;
         }
-        else error("Expected primary, found none");
+        else return error("Expected primary, found none");
     }
 
     private Lexeme assignment(){
@@ -209,11 +214,12 @@ public class Parser {
 
     private Lexeme functionCall(){
         log("functionCall");
-        Lexeme func = new Lexeme(FUNCTION_CALL);
-        func.addChild(consume(IDENTIFIER));
+        Lexeme root = new Lexeme(FUNCTION_CALL);
+        root.addChild(consume(IDENTIFIER));
         consume(LINEDOT);
-        if(parameterListPending()) func.addChild(parameterList());
+        if(parameterListPending()) root.addChild(parameterList());
         consume(DOTLINE);
+        return root;
     }
 
     private Lexeme functionDefiniton(){
@@ -315,105 +321,108 @@ public class Parser {
         return root;
     }
 
-    private void loop(){
+    private Lexeme loop(){
         log("loop");
-        if(repeaterLoopPending()) repeaterLoop();
-        else if(comparatorLoopPending()) comparatorLoop();
-        else error("Expected loop, found none");
+        if(repeaterLoopPending()) return repeaterLoop();
+        else if(comparatorLoopPending()) return comparatorLoop();
+        else return error("Expected loop, found none");
     }
 
 
-    private void repeaterLoop(){
+    private Lexeme repeaterLoop(){
         log("repeaterLoop");
-        consume(REPEATER);
+        Lexeme root = consume(REPEATER);
         consume(LINEDOT);
-        consume(INTEGER);
+        root.addChild(consume(INTEGER));
         consume(DOTLINE);
         consume(OCUBE);
-        statementList();
+        root.addChild(statementList());
         consume(CCUBE);
+        return root;
     }
 
-    private void comparatorLoop(){
+    private Lexeme comparatorLoop(){
         log("comparatorLoop");
-        consume(COMPARATOR);
+        Lexeme root = consume(COMPARATOR);
         consume(OCUBE);
-        statementList();
+        root.addChild(statementList());
         consume(CCUBE);
+        return root;
     }
 
-    private void returnStatement(){
+    private Lexeme returnStatement(){
         log("returnStatement");
-        consume(DROP);
-        expression();
+        Lexeme root = consume(DROP);
+        root.addChild(expression());
         end();
+        return root;
     }
 
-    private void end(){
+    private Lexeme end(){
         log("end");
-        if(currentLexeme.getLineNumber() % 12 != 0) consume(REDSTONE);
-        else consume(REPEAT);
+        if(currentLexeme.getLineNumber() % 12 != 0) return consume(REDSTONE);
+        else return consume(REPEAT);
     }
 
-    private void booleanLiteral(){
+    private Lexeme booleanLiteral(){
         log("booleanLiteral");
-        if(check(TRUE)) consume(TRUE);
-        else if(check(FALSE)) consume(FALSE);
-        else error("Expected boolean literal, found none");
+        if(check(TRUE)) return consume(TRUE);
+        else if(check(FALSE)) return consume(FALSE);
+        else return error("Expected boolean literal, found none");
     }
 
-    private void unaryAssignmentOperator(){
+    private Lexeme unaryAssignmentOperator(){
         log("unaryAssignmentOperator");
-        if(check(PLUS_PLUS)) consume(PLUS_PLUS);
-        else if(check(MINUS_MINUS)) consume(MINUS_MINUS);
-        else error("Expected unary assignment operator, found none");
+        if(check(PLUS_PLUS)) return consume(PLUS_PLUS);
+        else if(check(MINUS_MINUS)) return consume(MINUS_MINUS);
+        else return error("Expected unary assignment operator, found none");
     }
 
-    private void unaryOperator(){
+    private Lexeme unaryOperator(){
         log("unaryOperator");
-        if(check(NOT)) consume(NOT);
-        else if(check(TIMES_TIMES)) consume(TIMES_TIMES);
-        else if(check(SQRT)) consume(SQRT);
-        else if(check(MOD_MOD)) consume(MOD_MOD);
-        else error("Expected unary operator, found none");
+        if(check(NOT)) return consume(NOT);
+        else if(check(TIMES_TIMES)) return consume(TIMES_TIMES);
+        else if(check(SQRT)) return consume(SQRT);
+        else if(check(MOD_MOD)) return consume(MOD_MOD);
+        else return error("Expected unary operator, found none");
     }
 
-    private void naryOperator(){
+    private Lexeme naryOperator(){
         log("naryOperator");
-        if(check(PLUS)) consume(PLUS);
-        else if(check(TIMES)) consume(TIMES);
-        else if(check(MINUS)) consume(MINUS);
-        else if(check(SLASH)) consume(SLASH);
-        else if(check(MOD)) consume(MOD);
-        else error("Expected nary operator, found none");
+        if(check(PLUS)) return consume(PLUS);
+        else if(check(TIMES)) return consume(TIMES);
+        else if(check(MINUS)) return consume(MINUS);
+        else if(check(SLASH)) return consume(SLASH);
+        else if(check(MOD)) return consume(MOD);
+        else return error("Expected nary operator, found none");
     }
 
-    private void naryAssignmentOperator(){
+    private Lexeme naryAssignmentOperator(){
         log("naryAssignmentOperator");
-        if(check(PLUS_EQUALS)) consume(PLUS_EQUALS);
-        else if(check(TIMES_EQUALS)) consume(TIMES_EQUALS);
-        else if(check(MINUS_EQUALS)) consume(MINUS_EQUALS);
-        else if(check(SLASH_EQUALS)) consume(SLASH_EQUALS);
-        else error("Expected nary assignment operator, found none");
+        if(check(PLUS_EQUALS)) return consume(PLUS_EQUALS);
+        else if(check(TIMES_EQUALS)) return consume(TIMES_EQUALS);
+        else if(check(MINUS_EQUALS)) return consume(MINUS_EQUALS);
+        else if(check(SLASH_EQUALS)) return consume(SLASH_EQUALS);
+        else return error("Expected nary assignment operator, found none");
     }
 
-    private void conditionalOperator(){
+    private Lexeme conditionalOperator(){
         log("conditionalOperator");
-        if(check(EQUALITY)) consume(EQUALITY);
-        else if(check(INEQUALITY)) consume(INEQUALITY);
-        else if(check(GREATER_THAN)) consume(GREATER_THAN);
-        else if(check(LESS_THAN)) consume(LESS_THAN);
-        else if(check(GREATER_THAN_EQUALTO)) consume(GREATER_THAN_EQUALTO);
-        else if(check(LESS_THAN_EQUALTO)) consume(LESS_THAN_EQUALTO);
-        else if(check(WITHIN_EQUALITY)) consume(WITHIN_EQUALITY);
-        else error("Expected boolean operator, found none");
+        if(check(EQUALITY)) return consume(EQUALITY);
+        else if(check(INEQUALITY)) return consume(INEQUALITY);
+        else if(check(GREATER_THAN)) return consume(GREATER_THAN);
+        else if(check(LESS_THAN)) return consume(LESS_THAN);
+        else if(check(GREATER_THAN_EQUALTO)) return consume(GREATER_THAN_EQUALTO);
+        else if(check(LESS_THAN_EQUALTO)) return consume(LESS_THAN_EQUALTO);
+        else if(check(WITHIN_EQUALITY)) return consume(WITHIN_EQUALITY);
+        else return error("Expected boolean operator, found none");
     }
 
-    private void conditionalLogicOperator(){
+    private Lexeme conditionalLogicOperator(){
         log("conditionalLogOperator");
-        if(check(AND)) consume(AND);
-        else if(check(OR)) consume(OR);
-        else error("Expected logic operator, found none");
+        if(check(AND)) return consume(AND);
+        else if(check(OR)) return consume(OR);
+        else return error("Expected logic operator, found none");
     }
 
 
