@@ -80,10 +80,10 @@ public class Lexeme {
     //--------toString-----------
     public String toString() {
         String value = "EMPTY";
-        if(getIntValue() != null) value = getIntValue().toString();
-        if(getRealValue() != null) value = getRealValue().toString();
-        if(getBoolValue() != null) value = getBoolValue().toString();
-        if(getStringValue() != null) value = getStringValue();
+        if(intValue != null) value = intValue.toString();
+        if(realValue != null) value = realValue.toString();
+        if(boolValue != null) value = boolValue.toString();
+        if(stringValue != null) value = stringValue;
         return !value.equals("EMPTY") ? ("Type " + type +
         " on line number " + lineNumber +
         " (value: " + value + ")") : ("Type " + type +
@@ -92,10 +92,10 @@ public class Lexeme {
 
     public String toValueOnlyString(){
         String value = "EMPTY";
-        if(getIntValue() != null) value = getIntValue().toString();
-        if(getRealValue() != null) value = getRealValue().toString();
-        if(getBoolValue() != null) value = getBoolValue().toString();
-        if(getStringValue() != null) value = getStringValue();
+        if(intValue != null) value = intValue.toString();
+        if(realValue != null) value = realValue.toString();
+        if(boolValue != null) value = boolValue.toString();
+        if(stringValue != null) value = stringValue;
         return value;
     }
 
