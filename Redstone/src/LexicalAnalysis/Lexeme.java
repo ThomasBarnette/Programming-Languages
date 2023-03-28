@@ -77,6 +77,7 @@ public class Lexeme {
 
     public void addAll(ArrayList<Lexeme> childeren) { this.children.addAll(childeren); }
 
+
     //--------toString-----------
     public String toString() {
         String value = "EMPTY";
