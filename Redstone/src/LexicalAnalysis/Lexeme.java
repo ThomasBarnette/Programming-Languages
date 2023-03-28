@@ -84,9 +84,9 @@ public class Lexeme {
         if(getRealValue() != null) value = getRealValue().toString();
         if(getBoolValue() != null) value = getBoolValue().toString();
         if(getStringValue() != null) value = getStringValue();
-        return !value.equals("EMPTY") ? ("\n\nType " + type +
+        return !value.equals("EMPTY") ? ("Type " + type +
         " on line number " + lineNumber +
-        "\n value: " + value) : ("\n\nType " + type +
+        " (value: " + value + ")") : ("Type " + type +
         " on line number " + lineNumber);
     }
 
@@ -129,6 +129,7 @@ public class Lexeme {
                 treeString
                         .append(spacer).append("(").append(i + 1).append(") ")
                         .append(getPrintableTree(child, level + 1));
+                System.out.println("hi");
             }
         }
         return treeString.toString();
