@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import Enviornments.Enviornment;
+import Enviornments.EnviornmentTest;
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Lexer;
 import LexicalAnalysis.Type;
@@ -47,11 +48,7 @@ public class Redstone {
         Parser parser = new Parser(lexemes);
         Lexeme programParseTree = parser.program();
         // programParseTree.printAsParseTree();
-
-        //TODO delete this later - testing enviornments
-        testEnviornment();
-
-
+        EnviornmentTest test = new EnviornmentTest();
         printErrors();
     }
 
@@ -102,33 +99,5 @@ public class Redstone {
         if(random == 9) return "You have an error, but good news! I know how to fix the issue. \n Step 1: open google \n Step 2: google \"Coding for dummies\" \n Step 3: Spend at least 30 hours learning how to code because you clearly have no idea what you're doing \n";
         if(random == 10) return "You are not worthy of controlling any device. This computer will now self destruct in 5 seconds \n";
         return "Keep it up, you're doing great :)";
-    }
-
-    //Testing enviornments
-    public static void testEnviornment(){
-        //Pre defined lexemes
-        Lexeme testString = new Lexeme(0, "test", STRING);
-        Lexeme testInt = new Lexeme(0, 5, INTEGER);
-        Lexeme testReal = new Lexeme(0, 1.3, REAL);
-
-        Lexeme identifier1 = new Lexeme(0, "x", IDENTIFIER);
-        Lexeme identifier2 = new Lexeme(0, "b", IDENTIFIER);
-        Lexeme identifier3 = new Lexeme(0, "test", IDENTIFIER);
-
-        //Global enviornment
-        Enviornment global = new Enviornment();
-        global.add(STRING, identifier1, testString);
-
-        Enviornment child1 = new Enviornment(global);
-        child1.add(INTEGER, identifier2, testInt);
-        child1.add(REAL, identifier1, testReal);
-
-        Enviornment grandchild = new Enviornment(child1);
-        grandchild.add(INTEGER, identifier3, testInt);
-
-        Enviornment child2 = new Enviornment(global);
-        child2.add(INTEGER, identifier1, testInt);
-
-        System.out.println(grandchild);
     }
 }
