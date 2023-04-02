@@ -12,7 +12,7 @@ public class Parser {
     private Lexeme currentLexeme;
     private int nextLexemeIndex;
 
-    private final boolean showLogs = true;
+    private final boolean showLogs = false;
 
     public Parser(ArrayList<Lexeme> lexemes){
         this.lexemes = lexemes;

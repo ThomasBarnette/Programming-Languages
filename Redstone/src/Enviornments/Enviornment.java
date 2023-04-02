@@ -72,6 +72,16 @@ public class Enviornment {
         Redstone.runtimeError(message, lineNumber);
     }
 
+    public Lexeme typeElevate(Lexeme value, Type desiredType){
+        /* 
+        Because my variables aren't type specific, I don't see a use for casting in my language
+
+        Please correct me if I'm wrong and I will actually write out this function and re-submit
+        */
+        return null;
+    }
+
+
     //ToString
     public String toString() {
         String end = "";
@@ -80,9 +90,13 @@ public class Enviornment {
         if(this.parent != null) parent = "\n\tParent: " + Integer.toString(this.parent.getCode());
         String values = "";
         for(int i = 0; i<entries.size(); i++){
-            values += "\t" + entries.get(i).getName() + ": " + entries.get(i).getValue() + "\n";
+            values += "\t" + entries.get(i).getName().getStringValue() + ": " + entries.get(i).getValue().toValueOnlyString() + "\n";
         }
-        end += lines + "Enviornment " + code + parent + "\n\tValues: \n" + lines + values;
+        if(this.parent != null){
+            String nextLevel = this.parent.toString();
+            end += nextLevel;
+        }
+        end += lines + "Enviornment " + code + parent + "\n\n\tValues: \n\t" + lines + values;
         return end;
     }
 }
