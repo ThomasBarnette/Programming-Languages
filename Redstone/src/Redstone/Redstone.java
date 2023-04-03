@@ -5,12 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import Enviornments.Enviornment;
 import Enviornments.EnviornmentTest;
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Lexer;
-import LexicalAnalysis.Type;
-import static LexicalAnalysis.Type.*;
 import Parser.Parser;
 
 public class Redstone {
