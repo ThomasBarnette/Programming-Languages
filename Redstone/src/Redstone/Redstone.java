@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import Enviornments.Enviornment;
 import Enviornments.EnviornmentTest;
+import Interpreter.Interpreter;
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Lexer;
 import Parser.Parser;
@@ -45,7 +47,11 @@ public class Redstone {
         Parser parser = new Parser(lexemes);
         Lexeme programParseTree = parser.program();
         programParseTree.printAsParseTree();
-        EnviornmentTest test = new EnviornmentTest();
+        // EnviornmentTest test = new EnviornmentTest();
+        Enviornment globalEnviornment = new Enviornment();
+        Interpreter interpreter = new Interpreter();
+        Lexeme programResult = interpreter.eval(programParseTree, globalEnviornment);
+        System.out.println("Program Result: \n" + programResult);
         printErrors();
     }
 

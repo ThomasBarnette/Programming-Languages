@@ -192,7 +192,8 @@ public class Parser {
     private Lexeme intitialization(){
         log("initialization");
         Lexeme dec = declaration();
-        Lexeme root = consume(ASSIGNMENT);
+        Lexeme root = new Lexeme(INIT);
+        consume(ASSIGNMENT);
         root.addChild(dec);
         root.addChild(expression());
         return root;

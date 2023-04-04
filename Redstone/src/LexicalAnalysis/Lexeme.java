@@ -77,6 +77,10 @@ public class Lexeme {
 
     public void addAll(ArrayList<Lexeme> childeren) { this.children.addAll(childeren); }
 
+    public Lexeme getChild(int index){ return children.get(index); }
+
+    public ArrayList<Lexeme> getChildren(){ return this.children; }
+
 
     //--------toString-----------
     public String toString() {
