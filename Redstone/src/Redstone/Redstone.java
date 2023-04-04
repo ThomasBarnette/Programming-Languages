@@ -44,7 +44,7 @@ public class Redstone {
         // Parsing
         Parser parser = new Parser(lexemes);
         Lexeme programParseTree = parser.program();
-        // programParseTree.printAsParseTree();
+        programParseTree.printAsParseTree();
         EnviornmentTest test = new EnviornmentTest();
         printErrors();
     }

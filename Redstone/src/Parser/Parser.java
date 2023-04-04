@@ -63,7 +63,7 @@ public class Parser {
     private Lexeme statementList(){
         log("statementList");
         ArrayList<Lexeme> statements = new ArrayList<>();
-        Lexeme statementList = new Lexeme();
+        Lexeme statementList = new Lexeme(STATEMENT_LIST);
         while(statementPending()) statements.add(statement());
         statementList.addAll(statements);
         return statementList;
