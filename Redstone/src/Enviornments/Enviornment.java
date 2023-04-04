@@ -89,14 +89,11 @@ public class Enviornment {
         String parent = "\n\tThis is the global enviornment. ";
         if(this.parent != null) parent = "\n\tParent: " + Integer.toString(this.parent.getCode());
         String values = "";
-        for(int i = 0; i<entries.size(); i++){
-            values += "\t" + entries.get(i).getName().getStringValue() + ": " + entries.get(i).getValue().toValueOnlyString() + "\n";
-        }
-        if(this.parent != null){
-            String nextLevel = this.parent.toString();
-            end += nextLevel;
-        }
-        end += lines + "Enviornment " + code + parent + "\n\n\tValues: \n\t" + lines + values;
-        return end;
+
+        for(int i = 0; i<entries.size(); i++) values += "\t" + entries.get(i).getName().getStringValue() + ": " + entries.get(i).getValue().toValueOnlyString() + "\n";
+
+        if(this.parent != null) end += this.parent.toString();
+        
+        return end + lines + "Enviornment " + code + parent + "\n\n\tValues: \n\t" + lines + values;
     }
 }
