@@ -119,8 +119,6 @@ public class Lexeme {
 
         StringBuilder spacer = new StringBuilder("\n");
         spacer.append("\t".repeat(level)); 
-        System.out.println(level);
-
 
         int numChildren = root.children.size();  
         if (numChildren > 0) {
@@ -130,7 +128,6 @@ public class Lexeme {
                 treeString
                         .append(spacer).append("(").append(i + 1).append(") ")
                         .append(getPrintableTree(child, level + 1));
-                System.out.println("hi");
             }
         }
         return treeString.toString();

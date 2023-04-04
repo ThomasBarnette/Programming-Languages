@@ -63,7 +63,7 @@ public class Parser {
     private Lexeme statementList(){
         log("statementList");
         ArrayList<Lexeme> statements = new ArrayList<>();
-        Lexeme statementList = new Lexeme(STATEMENT_LIST);
+        Lexeme statementList = new Lexeme(currentLexeme.getLineNumber(), STATEMENT_LIST);
         while(statementPending()) statements.add(statement());
         statementList.addAll(statements);
         return statementList;
@@ -214,7 +214,7 @@ public class Parser {
 
     private Lexeme functionCall(){
         log("functionCall");
-        Lexeme root = new Lexeme(FUNCTION_CALL);
+        Lexeme root = new Lexeme(currentLexeme.getLineNumber(), FUNCTION_CALL);
         root.addChild(consume(IDENTIFIER));
         consume(LINEDOT);
         if(parameterListPending()) root.addChild(parameterList());
@@ -270,7 +270,7 @@ public class Parser {
 
     private Lexeme parameterList(){
         log("parameterList");
-        Lexeme root = new Lexeme(PARAM_LIST);
+        Lexeme root = new Lexeme(currentLexeme.getLineNumber(), PARAM_LIST);
         root.addChild(expression());
         if(check(COMMA)){
             consume(COMMA);
@@ -281,7 +281,7 @@ public class Parser {
 
     private Lexeme conditionalStatement(){
         log("condtionalStatement");
-        Lexeme root = new Lexeme(CONDITIONAL_BLOCK);
+        Lexeme root = new Lexeme(currentLexeme.getLineNumber(), CONDITIONAL_BLOCK);
         root.addChild(ifStatement());
         while(eifStatementPending()) root.addChild(eifStatement());
         if(eseStatementPending()) root.addChild(eseStatement());
