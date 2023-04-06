@@ -1,7 +1,7 @@
 package LexicalAnalysis;
 public enum Type{
      //Keywords
-     SUMMON, KILL, REPEAT,
+     SUMMON, KILL, REPEAT, PRINT,
 
      //Types
      REAL, INTEGER, STRING, BOOLEAN,

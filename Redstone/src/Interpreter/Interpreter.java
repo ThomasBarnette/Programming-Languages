@@ -48,6 +48,7 @@ public class Interpreter {
 
             case AND, OR -> evalConditionalLogic(tree, enviornment);
             case EQUALITY, INEQUALITY, WITHIN_EQUALITY, GREATER_THAN, GREATER_THAN_EQUALTO, LESS_THAN, LESS_THAN_EQUALTO -> evalConditionalExpr(tree, enviornment);
+            case PRINT -> evalPrint(tree, enviornment);
 
             default -> error("Cannot evaluate " + tree, tree.getLineNumber());
         };
@@ -251,7 +252,10 @@ public class Interpreter {
     }
 
     public Lexeme evalConditionalLogic(Lexeme tree, Enviornment enviornment){
-        return null;
+        Type type = tree.getType();
+        if(type == OR) return new Lexeme(tree.getLineNumber(), tree.getChild(1).getBoolValue() || tree.getChild(0).getBoolValue(), BOOLEAN);
+        if(type == AND) return new Lexeme(tree.getLineNumber(), tree.getChild(1).getBoolValue() && tree.getChild(0).getBoolValue(), BOOLEAN);
+        return error("Can not evaluate conditional logic", tree);
     }
 
     public Lexeme evalConditionalExpr(Lexeme tree, Enviornment enviornment){
@@ -264,5 +268,13 @@ public class Interpreter {
         if(tree.getType() == LESS_THAN) return lessThan(tree.getChild(0), tree.getChild(1));
         if(tree.getType() == LESS_THAN_EQUALTO) return lessThanEqualTo(tree.getChild(0), tree.getChild(1));
         return error("Expected conditional operator", tree);
+    }
+
+    public Lexeme evalPrint(Lexeme tree, Enviornment enviornment){
+        Lexeme expr = eval(tree.getChild(0), enviornment);
+        if(expr.getType() == IDENTIFIER) expr = enviornment.lookup(expr);
+        System.out.println("hi");
+        System.out.println(expr.toValueOnlyString());
+        return expr;
     }
 }

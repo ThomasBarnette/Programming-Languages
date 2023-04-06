@@ -250,6 +250,7 @@ public class Lexer {
         keywords.put("or", OR);
         keywords.put("drop", DROP);
         keywords.put("mine", MINE);
+        keywords.put("print", PRINT);
         return keywords;
     } 
 }

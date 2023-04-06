@@ -93,6 +93,7 @@ public class Parser {
         else if(conditionalStatementPending()) statement = conditionalStatement();
         else if(functionDefinitonPending()) statement = functionDefiniton();
         else if(loopPending()) statement = loop();
+        else if(printPending()) statement = print();
         else if(expressionPending()){
             statement = expression();
             end();
@@ -160,11 +161,13 @@ public class Parser {
         childeren.add(primary());
         Lexeme root = conditionalOperator();
         childeren.add(primary());
-        root.addAll(childeren);
         if(conditinoalLogicOperatorPending()){
-            root.addChild(conditionalLogicOperator());
+            root = conditionalLogicOperator();
+            root.addChild(conditionalOperator());
+            root.getChild(0).addAll(childeren);
             root.addChild(conditionalExpression());
         }
+        else root.addAll(childeren);
         return root;
     }
 
@@ -433,6 +436,16 @@ public class Parser {
         else return error("Expected logic operator, found none");
     }
 
+    private Lexeme print(){
+        log("print");
+        Lexeme root = consume(PRINT);
+        consume(LINEDOT);
+        root.addChild(expression());
+        consume(DOTLINE);
+        end();
+        return root;
+    }
+
 
     // -------- pending functions  -------------
 
@@ -443,7 +456,7 @@ public class Parser {
     private boolean statementPending(){
         return (expressionPending() || assignmentPending() || intitializationPending() || deletionPending() 
                 || functionDefinitonPending() || declarationPending() || conditionalStatementPending() 
-                || loopPending());
+                || loopPending() || printPending());
     }
 
     private boolean expressionPending(){
@@ -573,5 +586,9 @@ public class Parser {
 
     private boolean minePending(){
         return check(MINE);
+    }
+
+    private boolean printPending(){
+        return check(PRINT);
     }
 }
