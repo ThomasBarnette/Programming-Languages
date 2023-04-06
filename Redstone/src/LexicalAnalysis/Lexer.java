@@ -123,7 +123,7 @@ public class Lexer {
                 else if(checkSummon()) return new Lexeme(lineNumber, SUMMON);
                 else return new Lexeme(lineNumber, SLASH);
             case '%':
-                return match('%')? new Lexeme(lineNumber, MOD_MOD) : new Lexeme(lineNumber, MOD);
+                return match('%') ? new Lexeme(lineNumber, MOD_MOD) : new Lexeme(lineNumber, MOD);
             case '+':
                 if(match('+')) return new Lexeme(lineNumber, PLUS_PLUS);
                 else if(match('=')) return new Lexeme(lineNumber, PLUS_EQUALS);

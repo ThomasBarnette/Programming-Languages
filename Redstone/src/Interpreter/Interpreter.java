@@ -34,6 +34,13 @@ public class Interpreter {
             case PLUS_EQUALS, MINUS_EQUALS, SLASH_EQUALS, TIMES_EQUALS -> evalNaryAssignment(tree, enviornment);
             case PLUS, MINUS, TIMES, SLASH, MOD -> evalNaryExpression(tree, enviornment);
             case TIMES_TIMES, MOD_MOD, SQRT -> evalUnaryExpression(tree, enviornment);
+
+            case REPEATER -> repeaterLoop(tree, enviornment);
+            case COMPARATOR -> comparatorLoop(tree, enviornment);
+
+            case HOPPER, DROPPER, HOPPER_DROPPER -> functionDef(tree, enviornment);
+            case FUNCTION_CALL -> functionCall(tree, enviornment);
+
             default -> error("Cannot evaluate " + tree, tree.getLineNumber());
         };
     }
@@ -139,21 +146,51 @@ public class Interpreter {
         if(type == MOD_MOD) return modMod(val);
         return null;
     }
+    
+    private Lexeme comparatorLoop(Lexeme tree, Enviornment enviornment){
+        return null;
+    }
+
+    private Lexeme repeaterLoop(Lexeme tree, Enviornment enviornment){
+        Lexeme tick = eval(tree.getChild(0), enviornment);
+        if(tick.getType() != INTEGER || !(tick.getIntValue()<4 && tick.getIntValue() >= 0)) return error("Repeaer loops must evaluate to an int between 0 and 3", tree);
+        for(int i = tick.getIntValue(); i >= 0; i--){
+            Enviornment loopEnviornment = new Enviornment(enviornment);
+            Lexeme id = new Lexeme(tree.getLineNumber(), "tick", IDENTIFIER);
+            loopEnviornment.add(INTEGER, id, new Lexeme(tick.getLineNumber(), i, INTEGER));
+            eval(tree.getChild(1), loopEnviornment);
+        }
+        return null;
+    }
+
+    private Lexeme functionDef(Lexeme tree, Enviornment enviornment){
+        //TODO
+        return null;
+    }
+
+    private Lexeme functionCall(Lexeme tree, Enviornment enviornment){
+        //TODO
+        return null;
+    }
 
     private Lexeme add(Lexeme first, Lexeme second){
+        //TODO
         return null;
     }
 
     private Lexeme sub(Lexeme first, Lexeme second){
+        //TODO
         //first - second
         return null;
     }
 
     private Lexeme div(Lexeme first, Lexeme second){
+        //TODO
         return null;
     }
 
     private Lexeme times(Lexeme first, Lexeme second){
+        
           //Square
           Lexeme to = null;
           if(second == null){
@@ -167,11 +204,12 @@ public class Interpreter {
         }
 
         if(to != null) return to;
+        //TODO
         return error("Error on multpication", first);
     }
 
     private Lexeme mod(Lexeme first, Lexeme second){
-      
+        //TODO
         return null;
     }
 
