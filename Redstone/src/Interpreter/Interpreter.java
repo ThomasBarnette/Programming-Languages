@@ -192,8 +192,8 @@ public class Interpreter {
     
     private Lexeme comparatorLoop(Lexeme tree, Enviornment enviornment){
         Lexeme result;
-        while(true){
-            result = evalStatementList(tree, enviornment);
+        while(true) {
+            result = evalStatementList(tree, enviornment);  
             if(result.getType() == MINE) break;
         }
         return result;
@@ -201,14 +201,15 @@ public class Interpreter {
 
     private Lexeme repeaterLoop(Lexeme tree, Enviornment enviornment){
         Lexeme tick = eval(tree.getChild(0), enviornment);
+        Lexeme result = null;
         if(tick.getType() != INTEGER || !(tick.getIntValue()<4 && tick.getIntValue() >= 0)) return error("Repeaer loops must evaluate to an int between 0 and 3", tree);
         for(int i = tick.getIntValue(); i >= 0; i--){
             Enviornment loopEnviornment = new Enviornment(enviornment);
             Lexeme id = new Lexeme(tree.getLineNumber(), "tick", IDENTIFIER);
             loopEnviornment.add(INTEGER, id, new Lexeme(tick.getLineNumber(), i, INTEGER));
-            eval(tree.getChild(1), loopEnviornment);
+            result = eval(tree.getChild(1), loopEnviornment);
         }
-        return null;
+        return result;
     }
 
     private Lexeme functionDef(Lexeme tree, Enviornment enviornment){

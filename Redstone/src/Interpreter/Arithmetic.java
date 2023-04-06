@@ -20,23 +20,89 @@ public enum Arithmetic {
     }
     
     public static Lexeme add(Lexeme first, Lexeme second){
-        //TODO
-        return null;
+        Type type1 = first.getType();
+        Type type2 = second.getType();
+
+        //First is int
+        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getIntValue() + second.getIntValue(), INTEGER);
+        if(type1 == INTEGER && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() + second.getRealValue(), REAL);
+        if(type1 == INTEGER && type2 == STRING) return new Lexeme(first.getLineNumber(), second.getStringValue() + " ".repeat(first.getIntValue()), STRING);
+        if(type1 == INTEGER && type2 == BOOLEAN) {
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getIntValue() + val, INTEGER);
+        }
+
+        //First is real
+        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() + second.getIntValue(), REAL);
+        if(type1 == REAL && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getRealValue() + second.getRealValue(), REAL);
+        if(type1 == REAL && type2 == BOOLEAN) {
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getRealValue() + val, REAL);
+        }
+
+        //First is string
+        if(type1 == STRING && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getStringValue() + " ".repeat(second.getIntValue()), BOOLEAN);
+        if(type1 == STRING && type2 == STRING) return new Lexeme(first.getLineNumber(), first.getStringValue() + second.getStringValue(), STRING);
+    
+        //First is bool
+        if(type1 == BOOLEAN && type2 == INTEGER) return second.getIntValue() != 0 ? new Lexeme(first.getLineNumber(), true, BOOLEAN) : new Lexeme(first.getLineNumber(), false, BOOLEAN);
+        if(type1 == BOOLEAN && type2 == REAL) return second.getRealValue() != 0 ? new Lexeme(first.getLineNumber(), true, BOOLEAN) : new Lexeme(first.getLineNumber(), false, BOOLEAN);
+        if(type1 == BOOLEAN && type2 == BOOLEAN) return new Lexeme(first.getLineNumber(), first.getBoolValue() || second.getBoolValue(), BOOLEAN);
+        return error("Cannot add '" + type1 + "'' with '" + type2 + "'.", first);
     }
 
     public static Lexeme sub(Lexeme first, Lexeme second){
-        //TODO
-        //first - second
-        return null;
+        Type type1 = first.getType();
+        Type type2 = second.getType();
+        
+        //First is int
+        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getIntValue() - second.getIntValue(), INTEGER);
+        if(type1 == INTEGER && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() - second.getRealValue(), REAL);
+        if(type1 == INTEGER && type2 == BOOLEAN) {
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getIntValue() - val, INTEGER);
+        }
+
+        //First is real
+        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() - second.getIntValue(), REAL);
+        if(type1 == REAL && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getRealValue() - second.getRealValue(), REAL);
+        if(type1 == REAL && type2 == BOOLEAN) {
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getRealValue() - val, REAL);
+        }
+
+        //First is string
+        if(type1 == STRING && type2 == INTEGER && second.getIntValue() > 0 && second.getIntValue() < first.getStringValue().length()-1) return new Lexeme(first.getLineNumber(), first.getStringValue().substring(0, first.getStringValue().length()-second.getIntValue()), STRING);
+    
+        //First is bool
+        if(type1 == BOOLEAN && type2 == INTEGER) return second.getIntValue() != 0 ? new Lexeme(first.getLineNumber(), true, BOOLEAN) : new Lexeme(first.getLineNumber(), false, BOOLEAN);
+        if(type1 == BOOLEAN && type2 == REAL) return second.getRealValue() != 0 ? new Lexeme(first.getLineNumber(), true, BOOLEAN) : new Lexeme(first.getLineNumber(), false, BOOLEAN);
+        if(type1 == BOOLEAN && type2 == STRING) return error("Cannot add type Boolean with Type String", first);
+        if(type1 == BOOLEAN && type2 == BOOLEAN) return new Lexeme(first.getLineNumber(), first.getBoolValue() ^ second.getBoolValue(), BOOLEAN);
+        return error("Cannot subtract '" + type2 + "'' from '" + type2 + "'.", first);
     }
 
     public static Lexeme div(Lexeme first, Lexeme second){
-        //TODO
-        return null;
+        Type type1 = first.getType();
+        Type type2 = second.getType();
+        
+        //First is int
+        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getIntValue() / second.getIntValue(), REAL);
+        if(type1 == INTEGER && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() / second.getRealValue(), REAL);
+
+        //First is real
+        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() + second.getIntValue(), REAL);
+        if(type1 == REAL && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getRealValue() / second.getRealValue(), REAL);
+
+        //First is string
+        if(type1 == STRING && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getStringValue().substring(0, first.getStringValue().length()/second.getIntValue()), STRING);
+    
+        //First is bool
+        if(type1 == BOOLEAN && type2 == BOOLEAN) return new Lexeme(first.getLineNumber(), first.getBoolValue() == second.getBoolValue(), BOOLEAN);
+        return error("Cannot divide '" + type2 + "'' from '" + type1 + "'.", first);
     }
 
     public static Lexeme times(Lexeme first, Lexeme second){
-        
           //Square
           Lexeme to = null;
           if(second == null){
@@ -50,13 +116,62 @@ public enum Arithmetic {
         }
 
         if(to != null) return to;
-        //TODO
-        return error("Error on multpication", first);
+        Type type1 = first.getType();
+        Type type2 = second.getType();
+        
+        //First is int
+        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getIntValue() * second.getIntValue(), INTEGER);
+        if(type1 == INTEGER && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() * second.getRealValue(), REAL);
+        if(type1 == INTEGER && type2 == STRING) return new Lexeme(first.getLineNumber(), second.getStringValue().repeat(first.getIntValue()), STRING);
+        if(type1 == INTEGER && type2 == BOOLEAN) {
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getIntValue() * val, INTEGER);
+        }
+
+        //First is real
+        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() * second.getIntValue(), REAL);
+        if(type1 == REAL && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getRealValue() * second.getRealValue(), REAL);
+        if(type1 == REAL && type2 == STRING) return new Lexeme(first.getLineNumber(), second.getStringValue().repeat((first.getRealValue()).intValue()), STRING);
+        if(type1 == REAL && type2 == BOOLEAN) {
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getRealValue() * val, REAL);
+        }
+
+        //First is string
+        if(type1 == STRING && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getStringValue().repeat(second.getIntValue()), STRING);
+        if(type1 == STRING && type2 == REAL) return new Lexeme(first.getLineNumber(), first.getStringValue().repeat((second.getRealValue()).intValue()), STRING);
+        if(type1 == STRING && type2 == STRING) return new Lexeme(first.getLineNumber(), first.getStringValue().length() * second.getStringValue().length(), STRING);
+        if(type1 == STRING && type2 == BOOLEAN) return second.getBoolValue() ? new Lexeme(first.getLineNumber(), first.getStringValue(), STRING) : new Lexeme(first.getLineNumber(), "", STRING);
+       
+        //First is bool
+        if(type1 == BOOLEAN && type2 == INTEGER) {
+            int val = first.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), second.getIntValue() * val, INTEGER);
+        }
+        if(type1 == BOOLEAN && type2 == REAL) {
+            int val = first.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), second.getIntValue() * val, REAL);
+        }     
+        if(type1 == BOOLEAN && type2 == STRING) return first.getBoolValue() ? new Lexeme(first.getLineNumber(), second.getStringValue(), STRING) : new Lexeme(first.getLineNumber(), "", STRING);   
+        if(type1 == BOOLEAN && type2 == BOOLEAN) return new Lexeme(first.getLineNumber(), first.getBoolValue() && second.getBoolValue(), BOOLEAN);
+        return error("Cannot multiply '" + type1 + "'' with '" + type2 + "'.", first);
     }
 
     public static Lexeme mod(Lexeme first, Lexeme second){
-        //TODO
-        return null;
+        Type type1 = first.getType();
+        Type type2 = second.getType();
+        
+        //First is int
+        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getIntValue() % second.getIntValue(), INTEGER);
+        if(type1 == INTEGER && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() % second.getRealValue(), REAL);
+        
+        //First is real
+        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() % second.getIntValue(), REAL);
+        if(type1 == REAL && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getRealValue() % second.getRealValue(), REAL);
+
+        //First is string
+        if(type1 == STRING && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getStringValue().length() % second.getIntValue(), STRING);
+        return error("Cannot add '" + type1 + "'' with '" + type2 + "'.", first);
     }
 
     public static Lexeme sqrt(Lexeme id){
