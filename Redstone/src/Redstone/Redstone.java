@@ -49,9 +49,9 @@ public class Redstone {
         programParseTree.printAsParseTree();
         // EnviornmentTest test = new EnviornmentTest();
         Enviornment globalEnviornment = new Enviornment();
-        Interpreter interpreter = new Interpreter();
-        Lexeme programResult = interpreter.eval(programParseTree, globalEnviornment);
-        System.out.println("Program Result: \n" + programResult);
+        // Interpreter interpreter = new Interpreter();
+        // Lexeme programResult = interpreter.eval(programParseTree, globalEnviornment);
+        // System.out.println("Program Result: \n" + programResult);
         printErrors();
     }
 

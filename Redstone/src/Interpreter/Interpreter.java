@@ -32,6 +32,8 @@ public class Interpreter {
             case INIT -> initialization(tree, enviornment);
 
             case PLUS_EQUALS, MINUS_EQUALS, SLASH_EQUALS, TIMES_EQUALS -> evalNaryAssignment(tree, enviornment);
+            case PLUS, MINUS, TIMES, SLASH, MOD -> evalNaryExpression(tree, enviornment);
+            case TIMES_TIMES, MOD_MOD, SQRT -> evalUnaryExpression(tree, enviornment);
             default -> error("Cannot evaluate " + tree, tree.getLineNumber());
         };
     }
@@ -89,12 +91,61 @@ public class Interpreter {
         return id;
     }
 
+    private Lexeme evalNaryExpression(Lexeme tree, Enviornment enviornment){
+        Type type = tree.getType();
+        int numChildren = tree.getChildren().size();
+        if(numChildren <= 1) return tree;
+
+        if(type == PLUS){
+            Lexeme sum = tree.getChild(0);
+            for(int i = 2; i< numChildren; i++){
+                sum = add(sum, tree.getChild(i-1));
+            }
+            return sum;
+        }
+
+        else if(type == MINUS){
+            Lexeme diff = tree.getChild(0);
+            for(int i = 2; i< numChildren; i++){
+                diff = sub(diff, tree.getChild(i-1));
+            }
+            return diff;
+        }
+
+        else if(type == SLASH){
+            Lexeme dividend = tree.getChild(0);
+            for(int i = 2; i< numChildren; i++){
+                dividend = div(dividend, tree.getChild(i-1));
+            }
+            return dividend;
+        }
+
+        else if(type == TIMES){
+            Lexeme product = tree.getChild(0);
+            for(int i = 2; i< numChildren; i++){
+                product = times(product, tree.getChild(i-1));
+            }
+            return product;
+        }
+
+        return error("Expected nary operator!", tree);
+    }
+
+    private Lexeme evalUnaryExpression(Lexeme tree, Enviornment enviornment){
+        Type type = tree.getType();
+        Lexeme val = tree.getChild(0);
+        if(type == TIMES_TIMES) return times(val, null);
+        if(type == SQRT) return sqrt(val);
+        if(type == MOD_MOD) return modMod(val);
+        return null;
+    }
+
     private Lexeme add(Lexeme first, Lexeme second){
         return null;
     }
 
     private Lexeme sub(Lexeme first, Lexeme second){
-        //second - frist
+        //first - second
         return null;
     }
 
@@ -104,7 +155,7 @@ public class Interpreter {
 
     private Lexeme times(Lexeme first, Lexeme second){
           //Square
-          Lexeme to;
+          Lexeme to = null;
           if(second == null){
                if(first.getType() == INTEGER){
                     int value = first.getIntValue();
@@ -115,7 +166,8 @@ public class Interpreter {
            }
         }
 
-        return null;
+        if(to != null) return to;
+        return error("Error on multpication", first);
     }
 
     private Lexeme mod(Lexeme first, Lexeme second){
@@ -130,6 +182,19 @@ public class Interpreter {
             Lexeme to = new Lexeme(id.getLineNumber(), Math.sqrt(value), REAL);
             return to;
         }
-        return error("Expected type 'int' or 'real' with sqrt", id);
+        if(type == BOOLEAN) return id.getBoolValue() == true ? new Lexeme(id.getLineNumber(), 1, INTEGER) : new Lexeme(id.getLineNumber(), 0, INTEGER);
+        return error("Expected type 'int',  with sqrt", id);
     }
+
+    private Lexeme modMod(Lexeme val){
+        Type type = val.getType();
+        if(type == INTEGER) return new Lexeme(val.getLineNumber(), Integer.toString(val.getIntValue()).length(), INTEGER);
+        if(type == REAL) return new Lexeme(val.getLineNumber(), Double.toString(val.getRealValue()).length(), INTEGER);
+        if(type == STRING) return new Lexeme(val.getLineNumber(), val.getStringValue().length(), INTEGER);
+        if(type == BOOLEAN){
+            int value = val.getBoolValue() == true ? 1 : 0;
+            return  new Lexeme(val.getLineNumber(), value, INTEGER);
+        }
+    return error("Unable to evaluate modMod", val);
+    } 
 }
