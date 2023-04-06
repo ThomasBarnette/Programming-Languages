@@ -45,7 +45,7 @@ public class Redstone {
         // Parsing
         Parser parser = new Parser(lexemes);
         Lexeme programParseTree = parser.program();
-        // programParseTree.printAsParseTree();
+        programParseTree.printAsParseTree();
         Enviornment globalEnviornment = new Enviornment();
         Interpreter interpreter = new Interpreter();
         Lexeme programResult = interpreter.eval(programParseTree, globalEnviornment);

@@ -22,10 +22,11 @@ public class Interpreter {
     }
 
     public Lexeme eval(Lexeme tree, Enviornment enviornment){
+        // System.out.println(tree.getType());
         return switch(tree.getType()){
             case STATEMENT_LIST -> evalStatementList(tree, enviornment);
-            case INTEGER, BOOLEAN, REAL, STRING, MINE -> tree;
-            case IDENTIFIER -> enviornment.lookup(tree);
+            case INTEGER, BOOLEAN, REAL, STRING, MINE, IDENTIFIER -> tree;
+            // case IDENTIFIER -> enviornment.lookup(tree);
 
             
             case SUMMON -> declartion(tree, enviornment);
@@ -56,7 +57,7 @@ public class Interpreter {
 
     private Lexeme evalStatementList(Lexeme tree, Enviornment enviornment) {
         Lexeme result = new Lexeme(EMPTY);
-        for(Lexeme lexeme : tree.getChildren()) result = eval(lexeme, enviornment);
+        for(int i = 0; i < tree.getChildren().size(); i++) result = eval(tree.getChild(i), enviornment);
         return result;
     }
 
@@ -273,7 +274,6 @@ public class Interpreter {
     public Lexeme evalPrint(Lexeme tree, Enviornment enviornment){
         Lexeme expr = eval(tree.getChild(0), enviornment);
         if(expr.getType() == IDENTIFIER) expr = enviornment.lookup(expr);
-        System.out.println("hi");
         System.out.println(expr.toValueOnlyString());
         return expr;
     }

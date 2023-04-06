@@ -440,7 +440,7 @@ public class Parser {
         log("print");
         Lexeme root = consume(PRINT);
         consume(LINEDOT);
-        root.addChild(expression());
+        root.addChild(primary());
         consume(DOTLINE);
         end();
         return root;

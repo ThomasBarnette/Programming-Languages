@@ -1,6 +1,14 @@
 /summon x܍
-x = 4܍
+x=4܍ 
 
 print|. x .|܍ 
 
-x = +4~3
+hopper myFunc|. y .| [
+    repeater|. 2 .| [
+        print|. y .|܍
+    ]
+    print|. y .|܍
+]
+
+myFunc|. 3 .|܍
+ 
