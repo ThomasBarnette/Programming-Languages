@@ -81,4 +81,75 @@ public enum Arithmetic {
         }
     return error("Unable to evaluate modMod", val);
     } 
+
+    public static Lexeme equality(Lexeme first, Lexeme second){
+        Type type1 = first.getType();
+        Type type2 = second.getType();
+        //Type 1 = INT
+        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getIntValue() == second.getIntValue(), BOOLEAN);
+        if(type1 == INTEGER && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() == second.getRealValue(), BOOLEAN);
+        if(type1 == INTEGER && type2 == STRING) return new Lexeme(first.getLineNumber(), first.getIntValue() == second.getStringValue().length(), BOOLEAN);
+        if(type1 == INTEGER && type2 == BOOLEAN){
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getIntValue() == val, BOOLEAN);
+        } 
+        
+        //Type 1 = REAL
+        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() == (double)second.getIntValue(), BOOLEAN);
+        if(type1 == REAL && type2 == REAL) return new Lexeme(first.getLineNumber(), first.getRealValue() == second.getRealValue(), BOOLEAN);
+        if(type1 == REAL && type2 == STRING) return error("Unable to compare type 'REAL' to type 'SRING'", first);
+        if(type1 == REAL && type2 == BOOLEAN){
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), first.getRealValue() == val, BOOLEAN);
+        } 
+
+        //Type 1 = STRING
+        if(type1 == STRING && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getStringValue().equals(Integer.toString(second.getIntValue())), BOOLEAN);
+        if(type1 == STRING && type2 == REAL) return new Lexeme(first.getLineNumber(),first.getStringValue().equals(Double.toString(second.getRealValue())), BOOLEAN);
+        if(type1 == STRING && type2 == STRING) return new Lexeme(first.getLineNumber(), first.getStringValue().equals(second.getStringValue()), BOOLEAN);
+        if(type1 == STRING && type2 == BOOLEAN){
+            String val = second.getBoolValue() ? "true" : "false";
+            return new Lexeme(first.getLineNumber(), first.getStringValue().equals(val), BOOLEAN);
+        } 
+
+        //Type 1 = BOOLEAN
+        if(type1 == BOOLEAN && type2 == INTEGER) {
+            int val = first.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), second.getIntValue() == val, BOOLEAN);
+        }
+        if(type1 == BOOLEAN && type2 == REAL){
+            int val = second.getBoolValue() ? 1 : 0;
+            return new Lexeme(first.getLineNumber(), second.getRealValue() == val, BOOLEAN);
+        } 
+        if(type1 == BOOLEAN && type2 == STRING){
+            String val = second.getBoolValue() ? "true" : "false";
+            return new Lexeme(first.getLineNumber(), first.getStringValue().equals(val), BOOLEAN);
+        }
+        if(type1 == BOOLEAN && type2 == BOOLEAN) return new Lexeme(first.getLineNumber(), first.getBoolValue() == second.getBoolValue(), BOOLEAN);
+        return error("Cannot compare '" + type1 + "'' with '" + type2 + "'.", first);
+    }
+
+    public static Lexeme inequality(Lexeme first, Lexeme second){
+        return new Lexeme(first.getLineNumber(), !equality(first, second).getBoolValue(), BOOLEAN);
+    }
+
+    public static Lexeme withinEquality(Lexeme first, Lexeme val, Lexeme second){
+        return null;
+    }
+
+    public static Lexeme greaterThan(Lexeme first, Lexeme second){
+        return null;
+    }
+
+    public static Lexeme lessThan(Lexeme first, Lexeme second){
+        return null;
+    }
+
+    public static Lexeme greaterThanEqualTo(Lexeme first, Lexeme second){
+        return null;
+    }
+
+    public static Lexeme lessThanEqualTo(Lexeme first, Lexeme second){
+        return null;
+    }
 }

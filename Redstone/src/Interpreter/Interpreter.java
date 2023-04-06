@@ -41,7 +41,7 @@ public class Interpreter {
 
             case HOPPER, DROPPER, HOPPER_DROPPER -> functionDef(tree, enviornment);
             case FUNCTION_CALL -> functionCall(tree, enviornment);
-            case PARAM_LIST -> evalParamList(tree, enviornment);
+            case PARAM_LIST -> evalAllChildren(tree, enviornment);
 
             case CONDITIONAL_BLOCK -> evalConditionalBlock(tree, enviornment);
             case IF, EIF, ESE -> evalConditional(tree, enviornment);
@@ -109,6 +109,7 @@ public class Interpreter {
     private Lexeme evalNaryExpression(Lexeme tree, Enviornment enviornment){
         Type type = tree.getType();
         int numChildren = tree.getChildren().size();
+        evalAllChildren(tree, enviornment);
         if(numChildren <= 1) return tree;
 
         if(type == PLUS){
@@ -143,12 +144,20 @@ public class Interpreter {
             return product;
         }
 
+        else if(type == MOD){
+            Lexeme remainder = tree.getChild(0);
+            for(int i = 2; i <= numChildren; i++){
+                remainder = mod(remainder, tree.getChild(i-1));
+            }
+            return remainder;
+        }
+
         return error("Expected nary operator!", tree);
     }
 
     private Lexeme evalUnaryExpression(Lexeme tree, Enviornment enviornment){
         Type type = tree.getType();
-        Lexeme val = tree.getChild(0);
+        Lexeme val = eval(tree.getChild(0), enviornment);
         if(type == TIMES_TIMES) return times(val, null);
         if(type == SQRT) return sqrt(val);
         if(type == MOD_MOD) return modMod(val);
@@ -232,7 +241,7 @@ public class Interpreter {
         return eval(functionStatements, callEnviornment);
     }
 
-    public Lexeme evalParamList(Lexeme tree, Enviornment enviornment){
+    public Lexeme evalAllChildren(Lexeme tree, Enviornment enviornment){
         Lexeme result = null;
         for(int i = 0; i < tree.getChildren().size(); i++){
             result = tree.setChild(i, eval((tree.getChild(i)), enviornment));
@@ -245,6 +254,14 @@ public class Interpreter {
     }
 
     public Lexeme evalConditionalExpr(Lexeme tree, Enviornment enviornment){
-        return null;
+        evalAllChildren(tree, enviornment);
+        if(tree.getType() == EQUALITY) return equality(tree.getChild(0), tree.getChild(1));
+        if(tree.getType() == INEQUALITY) return inequality(tree.getChild(0), tree.getChild(1));
+        if(tree.getType() == WITHIN_EQUALITY) return withinEquality(tree.getChild(0), tree.getChild(1), tree.getChild(2));
+        if(tree.getType() == GREATER_THAN) return greaterThan(tree.getChild(0), tree.getChild(1));
+        if(tree.getType() == GREATER_THAN_EQUALTO) return greaterThanEqualTo(tree.getChild(0), tree.getChild(1));
+        if(tree.getType() == LESS_THAN) return lessThan(tree.getChild(0), tree.getChild(1));
+        if(tree.getType() == LESS_THAN_EQUALTO) return lessThanEqualTo(tree.getChild(0), tree.getChild(1));
+        return error("Expected conditional operator", tree);
     }
 }
