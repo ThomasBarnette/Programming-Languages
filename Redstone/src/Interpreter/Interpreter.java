@@ -1,5 +1,6 @@
 package Interpreter;
 
+import static Interpreter.Arithmetic.*;
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Type;
 import Redstone.Redstone;
@@ -40,6 +41,7 @@ public class Interpreter {
 
             case HOPPER, DROPPER, HOPPER_DROPPER -> functionDef(tree, enviornment);
             case FUNCTION_CALL -> functionCall(tree, enviornment);
+            case PARAM_LIST -> evalParamList(tree, enviornment);
 
             case CONDITIONAL_BLOCK -> evalConditionalBlock(tree, enviornment);
             case IF, EIF, ESE -> evalConditional(tree, enviornment);
@@ -203,70 +205,34 @@ public class Interpreter {
     }
 
     private Lexeme functionCall(Lexeme tree, Enviornment enviornment){
-        //TODO
-        return null;
-    }
+        Lexeme functionName = eval(tree.getChild(0), enviornment);
+        Lexeme functionTree = enviornment.lookup(functionName);
 
-    private Lexeme add(Lexeme first, Lexeme second){
-        //TODO
-        return null;
-    }
+        if(functionTree.getType() != HOPPER || functionTree.getType() != DROPPER || functionTree.getType() != HOPPER_DROPPER) return error("Attempted to call function, but none exists", tree);
 
-    private Lexeme sub(Lexeme first, Lexeme second){
-        //TODO
-        //first - second
-        return null;
-    }
-
-    private Lexeme div(Lexeme first, Lexeme second){
-        //TODO
-        return null;
-    }
-
-    private Lexeme times(Lexeme first, Lexeme second){
+        Enviornment definingEnviornment = functionTree.getDefiningEnviornment();
+        Enviornment callEnviornmnt = new Enviornment(definingEnviornment);
+        Lexeme parameterList = null;
+        Lexeme argumentList = null;
+        Lexeme functionStatements = null;
+        if(functionTree.getType() == HOPPER || functionTree.getType() == HOPPER_DROPPER){
+            parameterList = eval(functionTree.getChild(1), enviornment);
+            functionStatements = functionTree.getChild(2);
+            if(tree.getChildren().size()==2) argumentList = eval(tree.getChild(1), enviornment);
+            else return error("Attempting to call function that expectes arguments, but none given", tree);
+        } else if(tree.getChildren().size()==2) return error("Trying to call dropper function with arguments", tree);
         
-          //Square
-          Lexeme to = null;
-          if(second == null){
-               if(first.getType() == INTEGER){
-                    int value = first.getIntValue();
-                    to = new Lexeme(first.getLineNumber(), value*value, first.getType());
-               } else if(first.getType() == REAL){
-                double value = first.getIntValue();
-                to = new Lexeme(first.getLineNumber(), value*value, first.getType());
-           }
-        }
+        callEnviornmnt.extend(parameterList, argumentList);
 
-        if(to != null) return to;
-        //TODO
-        return error("Error on multpication", first);
+        if(functionTree.getType() == DROPPER) functionStatements = functionTree.getChild(1);
+        return eval(functionStatements, callEnviornmnt);
     }
 
-    private Lexeme mod(Lexeme first, Lexeme second){
-        //TODO
-        return null;
-    }
-
-    private Lexeme sqrt(Lexeme id){
-        Type type = id.getType();
-        if(type == INTEGER || type == REAL){
-            double value = type == INTEGER ? id.getIntValue() : id.getRealValue();
-            Lexeme to = new Lexeme(id.getLineNumber(), Math.sqrt(value), REAL);
-            return to;
+    public Lexeme evalParamList(Lexeme tree, Enviornment enviornment){
+        Lexeme result = null;
+        for(int i = 0; i < tree.getChildren().size(); i++){
+            result = tree.setChild(i, eval((tree.getChild(i)), enviornment));
         }
-        if(type == BOOLEAN) return id.getBoolValue() == true ? new Lexeme(id.getLineNumber(), 1, INTEGER) : new Lexeme(id.getLineNumber(), 0, INTEGER);
-        return error("Expected type 'int',  with sqrt", id);
+        return result;
     }
-
-    private Lexeme modMod(Lexeme val){
-        Type type = val.getType();
-        if(type == INTEGER) return new Lexeme(val.getLineNumber(), Integer.toString(val.getIntValue()).length(), INTEGER);
-        if(type == REAL) return new Lexeme(val.getLineNumber(), Double.toString(val.getRealValue()).length(), INTEGER);
-        if(type == STRING) return new Lexeme(val.getLineNumber(), val.getStringValue().length(), INTEGER);
-        if(type == BOOLEAN){
-            int value = val.getBoolValue() == true ? 1 : 0;
-            return  new Lexeme(val.getLineNumber(), value, INTEGER);
-        }
-    return error("Unable to evaluate modMod", val);
-    } 
 }

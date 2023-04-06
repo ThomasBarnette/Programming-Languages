@@ -2,6 +2,8 @@ package LexicalAnalysis;
 
 import java.util.*;
 
+import Enviornments.Enviornment;
+
 public class Lexeme {
     //Instance Variables
     private final Type type;
@@ -12,6 +14,8 @@ public class Lexeme {
     private Double realValue;
     private Integer intValue;
     private Boolean boolValue;
+    private Enviornment definingEnviornment;
+
     private ArrayList<Lexeme> children = new ArrayList<>();
 
     //-----------Constructors-------------
@@ -52,6 +56,13 @@ public class Lexeme {
         this.type = type;
     }
 
+    public Lexeme(int lineNumber, String id, Type type, Enviornment enviornment){
+        this.lineNumber = lineNumber;
+        this.stringValue = id;
+        this.type = type;
+        this.definingEnviornment = enviornment;
+    }
+
     //---------Getters and Setters------------
     public Integer getIntValue() { return intValue; }
 
@@ -65,6 +76,14 @@ public class Lexeme {
 
     public Type getType() { return type; }
 
+    public Lexeme getChild(int index){ return children.get(index); }
+
+    public Enviornment getDefiningEnviornment(){ return this.definingEnviornment; }
+
+    public ArrayList<Lexeme> getChildren(){ return this.children; }
+
+    public Lexeme setChild(int index, Lexeme newVal){ return this.children.set(index, newVal); }
+
     public void setIntValue(int intValue) { this.intValue = intValue; }
 
     public void setBoolValue(boolean boolValue) { this.boolValue = boolValue; }
@@ -76,10 +95,6 @@ public class Lexeme {
     public void addChild(Lexeme child) { this.children.add(child); }
 
     public void addAll(ArrayList<Lexeme> childeren) { this.children.addAll(childeren); }
-
-    public Lexeme getChild(int index){ return children.get(index); }
-
-    public ArrayList<Lexeme> getChildren(){ return this.children; }
 
 
     //--------toString-----------

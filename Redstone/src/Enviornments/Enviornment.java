@@ -1,9 +1,10 @@
 package Enviornments;
 
 import java.util.*;
-
 import LexicalAnalysis.*;
 import Redstone.Redstone;
+
+import static LexicalAnalysis.Type.*;
 
 public class Enviornment {
     private final Enviornment parent;
@@ -70,6 +71,22 @@ public class Enviornment {
 
     public void error(String message, int lineNumber){
         Redstone.runtimeError(message, lineNumber);
+    }
+
+    public void extend(Lexeme names, Lexeme vals){
+        if(names.getChildren().size() != vals.getChildren().size()) error("Trying to match a statement of type '" + names.getType() + "'' with a '" + vals.getType() + ".' However the sizes of these lists do not match", -1);
+        ArrayList<Lexeme> nameList = names.getChildren();
+        ArrayList<Lexeme> valList = vals.getChildren();
+        for(int i = 0; i < nameList.size(); i++){
+            Type type = valList.get(i).getType();
+            Lexeme value = null;
+            if(type == INTEGER) value = new Lexeme(valList.get(i).getLineNumber(), valList.get(i).getIntValue(), INTEGER);
+            if(type == REAL) value = new Lexeme(valList.get(i).getLineNumber(), valList.get(i).getRealValue(), REAL);
+            if(type == STRING) value = new Lexeme(valList.get(i).getLineNumber(), valList.get(i).getStringValue(), STRING);
+            if(type == BOOLEAN) value = new Lexeme(valList.get(i).getLineNumber(), valList.get(i).getBoolValue(), BOOLEAN);
+
+            add(valList.get(i).getType(), nameList.get(i), value);
+        }
     }
 
     public Lexeme typeElevate(Lexeme value, Type desiredType){
