@@ -157,6 +157,8 @@ public class Lexer {
 
         Type type = keywords.get(text);
         if(type == null) return new Lexeme(lineNumber, text, IDENTIFIER);
+        if(type == BOOLEAN && text.equals("true")) return new Lexeme(lineNumber, true, type);
+        else if(type == BOOLEAN && text.equals("false")) return new Lexeme(lineNumber, false, type);
         else return new Lexeme(lineNumber, type);
     }
 
@@ -238,8 +240,8 @@ public class Lexer {
         keywords.put("if", IF);
         keywords.put("eif", EIF);
         keywords.put("ese", ESE);
-        keywords.put("true", TRUE);
-        keywords.put("false", FALSE);
+        keywords.put("true", BOOLEAN);
+        keywords.put("false", BOOLEAN);
         keywords.put("hopperdropper", HOPPER_DROPPER);
         keywords.put("hopper", HOPPER);
         keywords.put("dropper", DROPPER);
