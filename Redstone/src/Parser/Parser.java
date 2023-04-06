@@ -14,6 +14,8 @@ public class Parser {
 
     private final boolean showLogs = false;
 
+    private boolean inLoop = false;
+
     public Parser(ArrayList<Lexeme> lexemes){
         this.lexemes = lexemes;
         this.nextLexemeIndex = 0;
@@ -94,6 +96,9 @@ public class Parser {
         else if(expressionPending()){
             statement = expression();
             end();
+       } else if(minePending()){
+           if(inLoop) statement = consume(MINE);
+           else return error("Found mine, but no loop to break");
        }
         else statement = error("Expected statement, none found");
         return statement;
@@ -344,10 +349,12 @@ public class Parser {
 
     private Lexeme comparatorLoop(){
         log("comparatorLoop");
+        inLoop = true;
         Lexeme root = consume(COMPARATOR);
         consume(OCUBE);
         root.addChild(statementList());
         consume(CCUBE);
+        inLoop = false;
         return root;
     }
 
@@ -562,5 +569,9 @@ public class Parser {
 
     private boolean parameterListPending() {
         return expressionPending();
+    }
+
+    private boolean minePending(){
+        return check(MINE);
     }
 }

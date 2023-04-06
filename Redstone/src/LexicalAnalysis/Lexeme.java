@@ -92,6 +92,8 @@ public class Lexeme {
 
     public void setString(String stringValue) {  this.stringValue = stringValue; }
 
+    public void setDefiningEnviornment(Enviornment enviornment) { this.definingEnviornment = enviornment; }
+
     public void addChild(Lexeme child) { this.children.add(child); }
 
     public void addAll(ArrayList<Lexeme> childeren) { this.children.addAll(childeren); }

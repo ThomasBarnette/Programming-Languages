@@ -24,7 +24,7 @@ public class Interpreter {
     public Lexeme eval(Lexeme tree, Enviornment enviornment){
         return switch(tree.getType()){
             case STATEMENT_LIST -> evalStatementList(tree, enviornment);
-            case INTEGER, BOOLEAN, REAL, STRING -> tree;
+            case INTEGER, BOOLEAN, REAL, STRING, MINE -> tree;
             case IDENTIFIER -> enviornment.lookup(tree);
 
             
@@ -45,6 +45,9 @@ public class Interpreter {
 
             case CONDITIONAL_BLOCK -> evalConditionalBlock(tree, enviornment);
             case IF, EIF, ESE -> evalConditional(tree, enviornment);
+
+            case AND, OR -> evalConditionalLogic(tree, enviornment);
+            case EQUALITY, INEQUALITY, WITHIN_EQUALITY, GREATER_THAN, GREATER_THAN_EQUALTO, LESS_THAN, LESS_THAN_EQUALTO -> evalConditionalExpr(tree, enviornment);
 
             default -> error("Cannot evaluate " + tree, tree.getLineNumber());
         };
@@ -110,7 +113,7 @@ public class Interpreter {
 
         if(type == PLUS){
             Lexeme sum = tree.getChild(0);
-            for(int i = 2; i< numChildren; i++){
+            for(int i = 2; i <= numChildren; i++){
                 sum = add(sum, tree.getChild(i-1));
             }
             return sum;
@@ -118,7 +121,7 @@ public class Interpreter {
 
         else if(type == MINUS){
             Lexeme diff = tree.getChild(0);
-            for(int i = 2; i< numChildren; i++){
+            for(int i = 2; i <= numChildren; i++){
                 diff = sub(diff, tree.getChild(i-1));
             }
             return diff;
@@ -126,7 +129,7 @@ public class Interpreter {
 
         else if(type == SLASH){
             Lexeme dividend = tree.getChild(0);
-            for(int i = 2; i< numChildren; i++){
+            for(int i = 2; i <= numChildren; i++){
                 dividend = div(dividend, tree.getChild(i-1));
             }
             return dividend;
@@ -134,7 +137,7 @@ public class Interpreter {
 
         else if(type == TIMES){
             Lexeme product = tree.getChild(0);
-            for(int i = 2; i< numChildren; i++){
+            for(int i = 2; i <= numChildren; i++){
                 product = times(product, tree.getChild(i-1));
             }
             return product;
@@ -200,7 +203,8 @@ public class Interpreter {
     }
 
     private Lexeme functionDef(Lexeme tree, Enviornment enviornment){
-        //TODO
+        enviornment.add(tree.getType(), tree);
+        tree.setDefiningEnviornment(enviornment);
         return null;
     }
 
@@ -211,7 +215,7 @@ public class Interpreter {
         if(functionTree.getType() != HOPPER || functionTree.getType() != DROPPER || functionTree.getType() != HOPPER_DROPPER) return error("Attempted to call function, but none exists", tree);
 
         Enviornment definingEnviornment = functionTree.getDefiningEnviornment();
-        Enviornment callEnviornmnt = new Enviornment(definingEnviornment);
+        Enviornment callEnviornment = new Enviornment(definingEnviornment);
         Lexeme parameterList = null;
         Lexeme argumentList = null;
         Lexeme functionStatements = null;
@@ -222,10 +226,10 @@ public class Interpreter {
             else return error("Attempting to call function that expectes arguments, but none given", tree);
         } else if(tree.getChildren().size()==2) return error("Trying to call dropper function with arguments", tree);
         
-        callEnviornmnt.extend(parameterList, argumentList);
+        callEnviornment.extend(parameterList, argumentList);
 
         if(functionTree.getType() == DROPPER) functionStatements = functionTree.getChild(1);
-        return eval(functionStatements, callEnviornmnt);
+        return eval(functionStatements, callEnviornment);
     }
 
     public Lexeme evalParamList(Lexeme tree, Enviornment enviornment){
@@ -234,5 +238,13 @@ public class Interpreter {
             result = tree.setChild(i, eval((tree.getChild(i)), enviornment));
         }
         return result;
+    }
+
+    public Lexeme evalConditionalLogic(Lexeme tree, Enviornment enviornment){
+        return null;
+    }
+
+    public Lexeme evalConditionalExpr(Lexeme tree, Enviornment enviornment){
+        return null;
     }
 }
