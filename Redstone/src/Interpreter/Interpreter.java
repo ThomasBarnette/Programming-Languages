@@ -41,6 +41,9 @@ public class Interpreter {
             case HOPPER, DROPPER, HOPPER_DROPPER -> functionDef(tree, enviornment);
             case FUNCTION_CALL -> functionCall(tree, enviornment);
 
+            case CONDITIONAL_BLOCK -> evalConditionalBlock(tree, enviornment);
+            case IF, EIF, ESE -> evalConditional(tree, enviornment);
+
             default -> error("Cannot evaluate " + tree, tree.getLineNumber());
         };
     }
@@ -146,9 +149,40 @@ public class Interpreter {
         if(type == MOD_MOD) return modMod(val);
         return null;
     }
+
+    private Lexeme evalConditionalBlock(Lexeme tree, Enviornment enviornment){
+        int numChildren = tree.getChildren().size();
+        if(numChildren == 0) return error("Expected conditional", tree);
+        Lexeme ifCondition = eval(tree.getChild(0).getChild(0), enviornment);
+
+        //Testing the 1 if case
+        if(ifCondition.getBoolValue() == true) return eval(tree.getChild(0), enviornment);
+
+        //Testinng EIF cases
+        if(numChildren>1 && tree.getChild(1).getType() == EIF){
+            for(int i = 1; i<numChildren-1; i++){
+                Lexeme eifCondition = eval(tree.getChild(i).getChild(0), enviornment);
+                if(eifCondition.getBoolValue() == true) return eval(tree.getChild(i), enviornment);
+            }
+        }
+        //Else case must be ese (which must be last in the array)
+        return eval(tree.getChild(numChildren-1), enviornment);
+    }
+
+    private Lexeme evalConditional(Lexeme tree, Enviornment enviornment){
+        Enviornment conditionalEnviornment = new Enviornment(enviornment);
+        Lexeme result;
+        result = eval(tree.getChild(1), conditionalEnviornment);
+        return result;
+    }
     
     private Lexeme comparatorLoop(Lexeme tree, Enviornment enviornment){
-        return null;
+        Lexeme result;
+        while(true){
+            result = evalStatementList(tree, enviornment);
+            if(result.getType() == MINE) break;
+        }
+        return result;
     }
 
     private Lexeme repeaterLoop(Lexeme tree, Enviornment enviornment){

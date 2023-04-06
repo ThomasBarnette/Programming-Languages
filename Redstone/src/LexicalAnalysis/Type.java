@@ -14,7 +14,7 @@ public enum Type{
      TRUE, FALSE,
 
     //Functions
-    HOPPER, DROPPER, HOPPER_DROPPER, DROP,
+    HOPPER, DROPPER, HOPPER_DROPPER, DROP, MINE,
      
      //Single character tokens
      OCUBE, CCUBE, LINEDOT, DOTLINE,
