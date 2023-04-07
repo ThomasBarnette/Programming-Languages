@@ -98,7 +98,7 @@ public class Parser {
             statement = expression();
             end();
        } else if(minePending()){
-           if(inLoop) statement = consume(MINE);
+           if(inLoop) statement = mine();
            else return error("Found mine, but no loop to break");
        }
         else statement = error("Expected statement, none found");
@@ -281,9 +281,9 @@ public class Parser {
         log("parameterList");
         Lexeme root = new Lexeme(currentLexeme.getLineNumber(), PARAM_LIST);
         root.addChild(expression());
-        if(check(COMMA)){
+        while (check(COMMA)){
             consume(COMMA);
-            root.addChild(parameterList());
+            root.addChild(expression());
         }
         return root;
     }
@@ -446,6 +446,12 @@ public class Parser {
         return root;
     }
 
+    private Lexeme mine(){
+        Lexeme root = consume(MINE);
+        end();
+        return root;
+    }
+
 
     // -------- pending functions  -------------
 
@@ -456,7 +462,7 @@ public class Parser {
     private boolean statementPending(){
         return (expressionPending() || assignmentPending() || intitializationPending() || deletionPending() 
                 || functionDefinitonPending() || declarationPending() || conditionalStatementPending() 
-                || loopPending() || printPending());
+                || loopPending() || printPending() || minePending());
     }
 
     private boolean expressionPending(){

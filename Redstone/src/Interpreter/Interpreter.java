@@ -25,8 +25,8 @@ public class Interpreter {
         // System.out.println(tree.getType());
         return switch(tree.getType()){
             case STATEMENT_LIST -> evalStatementList(tree, enviornment);
-            case INTEGER, BOOLEAN, REAL, STRING, MINE, IDENTIFIER -> tree;
-            // case IDENTIFIER -> enviornment.lookup(tree);
+            case INTEGER, BOOLEAN, REAL, STRING, MINE -> tree;
+            case IDENTIFIER -> enviornment.lookup(tree);
 
             
             case SUMMON -> declartion(tree, enviornment);
@@ -62,13 +62,13 @@ public class Interpreter {
     }
 
     private Lexeme declartion(Lexeme tree, Enviornment enviornment) {
-        Lexeme id = eval(tree.getChild(0), enviornment);
+        Lexeme id = tree.getChild(0);
         enviornment.add(IDENTIFIER, id);
         return id;
     }
 
     private Lexeme assignment(Lexeme tree, Enviornment enviornment) {
-        Lexeme id = eval(tree.getChild(0), enviornment);
+        Lexeme id = tree.getChild(0);
         Lexeme value = eval(tree.getChild(1), enviornment);
 
         enviornment.update(id, value);
@@ -76,7 +76,7 @@ public class Interpreter {
     }
 
     private Lexeme initialization(Lexeme tree, Enviornment enviornment){
-        Lexeme id = eval(tree.getChild(0), enviornment);
+        Lexeme id = tree.getChild(0);
         Lexeme value = eval(tree.getChild(0), enviornment);
 
         enviornment.update(id, value);
@@ -84,7 +84,8 @@ public class Interpreter {
     }
 
     private Lexeme evalNaryAssignment(Lexeme tree, Enviornment enviornment){
-        Lexeme id = eval(tree.getChild(0), enviornment);
+        Lexeme id = tree.getChild(0);
+        id = enviornment.lookup(id);
         Lexeme to = eval(tree.getChild(1), enviornment);
 
         switch(tree.getType()){
@@ -125,7 +126,7 @@ public class Interpreter {
         else if(type == MINUS){
             Lexeme diff = tree.getChild(0);
             for(int i = 2; i <= numChildren; i++){
-                diff = sub(diff, tree.getChild(i-1));
+                 diff = sub(diff, tree.getChild(i-1));
             }
             return diff;
         }
@@ -160,6 +161,7 @@ public class Interpreter {
     private Lexeme evalUnaryExpression(Lexeme tree, Enviornment enviornment){
         Type type = tree.getType();
         Lexeme val = eval(tree.getChild(0), enviornment);
+        if(type == IDENTIFIER) val = enviornment.lookup(val);
         if(type == TIMES_TIMES) return times(val, null);
         if(type == SQRT) return sqrt(val);
         if(type == MOD_MOD) return modMod(val);
@@ -193,10 +195,10 @@ public class Interpreter {
     }
     
     private Lexeme comparatorLoop(Lexeme tree, Enviornment enviornment){
-        Lexeme result;
-        while(true) {
-            result = evalStatementList(tree, enviornment);  
-            if(result.getType() == MINE) break;
+        Lexeme result = new Lexeme();
+        while(result.getType() != MINE) {
+            Enviornment loopEnviornment = new Enviornment(enviornment);
+            result = eval(tree.getChild(0), loopEnviornment);  
         }
         return result;
     }
@@ -215,16 +217,16 @@ public class Interpreter {
     }
 
     private Lexeme functionDef(Lexeme tree, Enviornment enviornment){
-        enviornment.add(tree.getType(), tree);
+        enviornment.add(tree.getType(), tree.getChild(0), tree);
         tree.setDefiningEnviornment(enviornment);
         return null;
     }
 
     private Lexeme functionCall(Lexeme tree, Enviornment enviornment){
-        Lexeme functionName = eval(tree.getChild(0), enviornment);
+        Lexeme functionName = tree.getChild(0);
         Lexeme functionTree = enviornment.lookup(functionName);
 
-        if(functionTree.getType() != HOPPER || functionTree.getType() != DROPPER || functionTree.getType() != HOPPER_DROPPER) return error("Attempted to call function, but none exists", tree);
+        if(functionTree.getType() != HOPPER && functionTree.getType() != DROPPER && functionTree.getType() != HOPPER_DROPPER) return error("Attempted to call function, but none exists", tree);
 
         Enviornment definingEnviornment = functionTree.getDefiningEnviornment();
         Enviornment callEnviornment = new Enviornment(definingEnviornment);
@@ -232,9 +234,13 @@ public class Interpreter {
         Lexeme argumentList = null;
         Lexeme functionStatements = null;
         if(functionTree.getType() == HOPPER || functionTree.getType() == HOPPER_DROPPER){
-            parameterList = eval(functionTree.getChild(1), enviornment);
+            parameterList = functionTree.getChild(1);
+            // evalAllChildren(parameterList, enviornment);
             functionStatements = functionTree.getChild(2);
-            if(tree.getChildren().size()==2) argumentList = eval(tree.getChild(1), enviornment);
+            if(tree.getChildren().size()==2){
+                 argumentList = tree.getChild(1);
+                 evalAllChildren(argumentList, enviornment);
+            }
             else return error("Attempting to call function that expectes arguments, but none given", tree);
         } else if(tree.getChildren().size()==2) return error("Trying to call dropper function with arguments", tree);
         

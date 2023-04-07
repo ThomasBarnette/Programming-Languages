@@ -42,6 +42,7 @@ public class Redstone {
         //Lexing
         Lexer lexer = new Lexer(source);
         ArrayList<Lexeme> lexemes = lexer.lex();
+        for(Lexeme lexeme : lexemes) System.out.println(lexeme);
         // Parsing
         Parser parser = new Parser(lexemes);
         Lexeme programParseTree = parser.program();

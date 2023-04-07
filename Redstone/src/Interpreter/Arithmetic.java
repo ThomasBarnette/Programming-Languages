@@ -87,11 +87,11 @@ public enum Arithmetic {
         Type type2 = second.getType();
         
         //First is int
-        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getIntValue() / second.getIntValue(), REAL);
+        if(type1 == INTEGER && type2 == INTEGER) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() / second.getIntValue(), REAL);
         if(type1 == INTEGER && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getIntValue() / second.getRealValue(), REAL);
 
         //First is real
-        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() + second.getIntValue(), REAL);
+        if(type1 == REAL && type2 == INTEGER) return new Lexeme(first.getLineNumber(), first.getRealValue() / second.getIntValue(), REAL);
         if(type1 == REAL && type2 == REAL) return new Lexeme(first.getLineNumber(), (double)first.getRealValue() / second.getRealValue(), REAL);
 
         //First is string
@@ -104,18 +104,17 @@ public enum Arithmetic {
 
     public static Lexeme times(Lexeme first, Lexeme second){
           //Square
-          Lexeme to = null;
           if(second == null){
+            //    System.out.println(first.getType());
                if(first.getType() == INTEGER){
                     int value = first.getIntValue();
-                    to = new Lexeme(first.getLineNumber(), value*value, first.getType());
+                    return new Lexeme(first.getLineNumber(), value*value, first.getType());
                } else if(first.getType() == REAL){
-                double value = first.getIntValue();
-                to = new Lexeme(first.getLineNumber(), value*value, first.getType());
+                    double value = first.getIntValue();
+                    return new Lexeme(first.getLineNumber(), value*value, first.getType());
            }
         }
 
-        if(to != null) return to;
         Type type1 = first.getType();
         Type type2 = second.getType();
         
