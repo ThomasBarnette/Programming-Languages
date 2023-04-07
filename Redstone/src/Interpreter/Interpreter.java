@@ -76,8 +76,8 @@ public class Interpreter {
     }
 
     private Lexeme initialization(Lexeme tree, Enviornment enviornment){
-        Lexeme id = tree.getChild(0);
-        Lexeme value = eval(tree.getChild(0), enviornment);
+        Lexeme id = eval(tree.getChild(0), enviornment);
+        Lexeme value = eval(tree.getChild(1), enviornment);
 
         enviornment.update(id, value);
         return id;
@@ -112,45 +112,44 @@ public class Interpreter {
     private Lexeme evalNaryExpression(Lexeme tree, Enviornment enviornment){
         Type type = tree.getType();
         int numChildren = tree.getChildren().size();
-        evalAllChildren(tree, enviornment);
         if(numChildren <= 1) return tree;
 
         if(type == PLUS){
-            Lexeme sum = tree.getChild(0);
+            Lexeme sum = eval(tree.getChild(0), enviornment);
             for(int i = 2; i <= numChildren; i++){
-                sum = add(sum, tree.getChild(i-1));
+                sum = add(sum, eval(tree.getChild(i-1), enviornment));
             }
             return sum;
         }
 
         else if(type == MINUS){
-            Lexeme diff = tree.getChild(0);
+            Lexeme diff = eval(tree.getChild(0), enviornment);
             for(int i = 2; i <= numChildren; i++){
-                 diff = sub(diff, tree.getChild(i-1));
+                 diff = sub(diff, eval(tree.getChild(i-1), enviornment));
             }
             return diff;
         }
 
         else if(type == SLASH){
-            Lexeme dividend = tree.getChild(0);
+            Lexeme dividend = eval(tree.getChild(0), enviornment);
             for(int i = 2; i <= numChildren; i++){
-                dividend = div(dividend, tree.getChild(i-1));
+                dividend = div(dividend, eval(tree.getChild(i-1), enviornment));
             }
             return dividend;
         }
 
         else if(type == TIMES){
-            Lexeme product = tree.getChild(0);
+            Lexeme product = eval(tree.getChild(0), enviornment);
             for(int i = 2; i <= numChildren; i++){
-                product = times(product, tree.getChild(i-1));
+                product = times(product, eval(tree.getChild(i-1), enviornment));
             }
             return product;
         }
 
         else if(type == MOD){
-            Lexeme remainder = tree.getChild(0);
+            Lexeme remainder = eval(tree.getChild(0), enviornment);
             for(int i = 2; i <= numChildren; i++){
-                remainder = mod(remainder, tree.getChild(i-1));
+                remainder = mod(remainder, eval(tree.getChild(i-1), enviornment));
             }
             return remainder;
         }
@@ -235,7 +234,6 @@ public class Interpreter {
         Lexeme functionStatements = null;
         if(functionTree.getType() == HOPPER || functionTree.getType() == HOPPER_DROPPER){
             parameterList = functionTree.getChild(1);
-            // evalAllChildren(parameterList, enviornment);
             functionStatements = functionTree.getChild(2);
             if(tree.getChildren().size()==2){
                  argumentList = tree.getChild(1);
@@ -266,14 +264,22 @@ public class Interpreter {
     }
 
     public Lexeme evalConditionalExpr(Lexeme tree, Enviornment enviornment){
-        evalAllChildren(tree, enviornment);
-        if(tree.getType() == EQUALITY) return equality(tree.getChild(0), tree.getChild(1));
-        if(tree.getType() == INEQUALITY) return inequality(tree.getChild(0), tree.getChild(1));
-        if(tree.getType() == WITHIN_EQUALITY) return withinEquality(tree.getChild(0), tree.getChild(1), tree.getChild(2));
-        if(tree.getType() == GREATER_THAN) return greaterThan(tree.getChild(0), tree.getChild(1));
-        if(tree.getType() == GREATER_THAN_EQUALTO) return greaterThanEqualTo(tree.getChild(0), tree.getChild(1));
-        if(tree.getType() == LESS_THAN) return lessThan(tree.getChild(0), tree.getChild(1));
-        if(tree.getType() == LESS_THAN_EQUALTO) return lessThanEqualTo(tree.getChild(0), tree.getChild(1));
+
+        //Evaluate within equality
+        Lexeme withinNum = null;
+        if(tree.getType() == WITHIN_EQUALITY){
+            if(tree.getRealValue() != null) withinNum = new Lexeme(tree.getLineNumber(), tree.getRealValue(), REAL);
+            else if(tree.getIntValue() != null) withinNum = new Lexeme(tree.getLineNumber(), tree.getIntValue(), INTEGER);
+            else error("Not a valid expression for within equality", tree);
+        }
+
+        if(tree.getType() == EQUALITY) return equality(eval(tree.getChild(0), enviornment), eval(tree.getChild(1), enviornment));
+        if(tree.getType() == INEQUALITY) return inequality(eval(tree.getChild(0), enviornment), eval(tree.getChild(1), enviornment));
+        if(tree.getType() == WITHIN_EQUALITY) return withinEquality(eval(tree.getChild(0), enviornment), withinNum, eval(tree.getChild(1), enviornment));
+        if(tree.getType() == GREATER_THAN) return greaterThan(eval(tree.getChild(0), enviornment), eval(tree.getChild(1), enviornment));
+        if(tree.getType() == GREATER_THAN_EQUALTO) return greaterThanEqualTo(eval(tree.getChild(0), enviornment), eval(tree.getChild(1), enviornment));
+        if(tree.getType() == LESS_THAN) return lessThan(eval(tree.getChild(0), enviornment), eval(tree.getChild(1), enviornment));
+        if(tree.getType() == LESS_THAN_EQUALTO) return lessThanEqualTo(eval(tree.getChild(0), enviornment), eval(tree.getChild(1), enviornment));
         return error("Expected conditional operator", tree);
     }
 

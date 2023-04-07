@@ -105,7 +105,6 @@ public enum Arithmetic {
     public static Lexeme times(Lexeme first, Lexeme second){
           //Square
           if(second == null){
-            //    System.out.println(first.getType());
                if(first.getType() == INTEGER){
                     int value = first.getIntValue();
                     return new Lexeme(first.getLineNumber(), value*value, first.getType());
