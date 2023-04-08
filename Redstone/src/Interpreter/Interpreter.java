@@ -41,6 +41,7 @@ public class Interpreter {
             case COMPARATOR -> comparatorLoop(tree, enviornment);
 
             case HOPPER, DROPPER, HOPPER_DROPPER -> functionDef(tree, enviornment);
+            // case DROP -> evalReturn(tree, enviornment);
             case FUNCTION_CALL -> functionCall(tree, enviornment);
             case PARAM_LIST -> evalAllChildren(tree, enviornment);
 
@@ -197,7 +198,8 @@ public class Interpreter {
         Lexeme result = new Lexeme();
         while(result.getType() != MINE) {
             Enviornment loopEnviornment = new Enviornment(enviornment);
-            result = eval(tree.getChild(0), loopEnviornment);  
+            result = eval(tree.getChild(0), loopEnviornment); 
+            if(result.getType() == MINE) break;
         }
         return result;
     }
@@ -211,6 +213,7 @@ public class Interpreter {
             Lexeme id = new Lexeme(tree.getLineNumber(), "tick", IDENTIFIER);
             loopEnviornment.add(INTEGER, id, new Lexeme(tick.getLineNumber(), i, INTEGER));
             result = eval(tree.getChild(1), loopEnviornment);
+            if(result.getType() == MINE) break;
         }
         return result;
     }

@@ -340,6 +340,7 @@ public class Parser {
 
     private Lexeme repeaterLoop(){
         log("repeaterLoop");
+        inLoop = true;
         Lexeme root = consume(REPEATER);
         consume(LINEDOT);
         root.addChild(consume(INTEGER));
@@ -347,6 +348,7 @@ public class Parser {
         consume(OCUBE);
         root.addChild(statementList());
         consume(CCUBE);
+        inLoop = false;
         return root;
     }
 
@@ -371,8 +373,9 @@ public class Parser {
 
     private Lexeme end(){
         log("end");
-        if(currentLexeme.getLineNumber() % 12 != 0) return consume(REDSTONE);
-        else return consume(REPEAT);
+        // if(currentLexeme.getLineNumber() % 12 != 0) 
+        return consume(REDSTONE);
+        // else return consume(REPEAT);
     }
 
     private Lexeme booleanLiteral(){
