@@ -22,10 +22,10 @@ public class Interpreter {
     }
 
     public Lexeme eval(Lexeme tree, Enviornment enviornment){
-        // System.out.println(tree.getType());
+        System.out.println(tree.getType());
         return switch(tree.getType()){
             case STATEMENT_LIST -> evalStatementList(tree, enviornment);
-            case INTEGER, BOOLEAN, REAL, STRING, MINE -> tree;
+            case INTEGER, BOOLEAN, REAL, STRING, MINE, DROP-> tree;
             case IDENTIFIER -> enviornment.lookup(tree);
 
             
@@ -198,7 +198,7 @@ public class Interpreter {
         Lexeme result = new Lexeme();
         while(result.getType() != MINE) {
             Enviornment loopEnviornment = new Enviornment(enviornment);
-            result = eval(tree.getChild(0), loopEnviornment); 
+            for(int i = 0; i < tree.getChildren().size(); i++) result = eval(tree.getChild(0).getChild(i), loopEnviornment); 
             if(result.getType() == MINE) break;
         }
         return result;
@@ -247,8 +247,25 @@ public class Interpreter {
         
         callEnviornment.extend(parameterList, argumentList);
 
-        if(functionTree.getType() == DROPPER) functionStatements = functionTree.getChild(1);
+        if(functionTree.getType() == DROPPER){
+             functionStatements = functionTree.getChild(1);
+             if(functionTree.getType() != HOPPER) return evalFunction(functionStatements, callEnviornment);
+        }
         return eval(functionStatements, callEnviornment);
+    }
+
+    public Lexeme evalFunction(Lexeme tree, Enviornment enviornment){
+        Lexeme statementList;
+        if(tree.getType() == DROPPER) statementList = tree.getChild(1);
+        else if(tree.getType() == HOPPER_DROPPER) statementList = tree.getChild(2);
+        else return error("Expected DROPPER OR HOPPER_DROPPER, found neither", tree);
+
+        Lexeme result;
+        for(int i = 0; i<statementList.getChildren().size(); i++){
+            result = eval(statementList.getChild(i), enviornment);
+            if(result.getType() == DROP) return eval(result.getChild(0), enviornment);
+        }
+        return error("Lexeme: '" + tree + "' must drop a vaule!", tree.getLineNumber());
     }
 
     public Lexeme evalAllChildren(Lexeme tree, Enviornment enviornment){

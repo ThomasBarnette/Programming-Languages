@@ -354,7 +354,6 @@ public class Parser {
 
     private Lexeme comparatorLoop(){
         log("comparatorLoop");
-        inLoop = true;
         Lexeme root = consume(COMPARATOR);
         consume(OCUBE);
         root.addChild(statementList());
