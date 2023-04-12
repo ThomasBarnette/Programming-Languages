@@ -92,7 +92,10 @@ public class Parser {
         }
         else if(conditionalStatementPending()) statement = conditionalStatement();
         else if(functionDefinitonPending()) statement = functionDefiniton();
-        else if(loopPending()) statement = loop();
+        else if(loopPending()){
+            System.out.println("test");
+             statement = loop();
+        }
         else if(printPending()) statement = print();
         else if(expressionPending()){
             statement = expression();
@@ -332,6 +335,7 @@ public class Parser {
 
     private Lexeme loop(){
         log("loop");
+        System.out.println("test");
         if(repeaterLoopPending()) return repeaterLoop();
         else if(comparatorLoopPending()) return comparatorLoop();
         else return error("Expected loop, found none");
@@ -354,6 +358,7 @@ public class Parser {
 
     private Lexeme comparatorLoop(){
         log("comparatorLoop");
+        inLoop = true;
         Lexeme root = consume(COMPARATOR);
         consume(OCUBE);
         root.addChild(statementList());

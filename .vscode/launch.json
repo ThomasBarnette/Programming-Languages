@@ -23,7 +23,7 @@
             "request": "launch",
             "mainClass": "Redstone.Redstone",
             "projectName": "Programming-Languages_53fc5c0c",
-            "args": "/Users/thomasbarnette/Documents/Code/GitHub/Programming-Languages/Redstone/runnableInput/returning.red"
+            "args": "/Users/thomasbarnette/Documents/Code/GitHub/Programming-Languages/Redstone/runnableInput/firstFunction.red"
         }
     ]
 }

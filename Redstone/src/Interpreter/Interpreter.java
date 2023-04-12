@@ -22,7 +22,7 @@ public class Interpreter {
     }
 
     public Lexeme eval(Lexeme tree, Enviornment enviornment){
-        System.out.println(tree.getType());
+        // System.out.println(tree.getType());
         return switch(tree.getType()){
             case STATEMENT_LIST -> evalStatementList(tree, enviornment);
             case INTEGER, BOOLEAN, REAL, STRING, MINE, DROP-> tree;
@@ -190,7 +190,8 @@ public class Interpreter {
     private Lexeme evalConditional(Lexeme tree, Enviornment enviornment){
         Enviornment conditionalEnviornment = new Enviornment(enviornment);
         Lexeme result;
-        result = eval(tree.getChild(1), conditionalEnviornment);
+        if(tree.getType() != ESE) result = eval(tree.getChild(1), conditionalEnviornment);
+        else result = eval(tree.getChild(0), conditionalEnviornment);
         return result;
     }
     

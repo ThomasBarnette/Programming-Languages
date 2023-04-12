@@ -4,4 +4,4 @@ dropper pi [
 
 /summon y = 5܍
 
-print|. pi|..| .|܍
+print|. pi .|܍

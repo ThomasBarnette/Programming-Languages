@@ -21,10 +21,12 @@ repeater|. 3 .| [
 /summon y܍
 y = 5܍
 comparator[
-    if|. y <> 5 .| [
-        mine ܍
+    if|. y <> 1 .| [
+        mine܍
     ]
+    ese [
     print|. y .|܍
     y = -y~1܍
+    ]
 ]
  
