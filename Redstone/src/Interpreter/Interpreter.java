@@ -245,25 +245,23 @@ public class Interpreter {
             }
             else return error("Attempting to call function that expectes arguments, but none given", tree);
         } else if(tree.getChildren().size()==2) return error("Trying to call dropper function with arguments", tree);
-        
         callEnviornment.extend(parameterList, argumentList);
 
         if(functionTree.getType() == DROPPER){
              functionStatements = functionTree.getChild(1);
-             if(functionTree.getType() != HOPPER) return evalFunction(functionStatements, callEnviornment);
+             return evalFunction(functionStatements, callEnviornment);
+
+        } else if(functionTree.getType() == HOPPER_DROPPER){
+            functionStatements = functionTree.getChild(2);
+            return evalFunction(functionStatements, callEnviornment);
         }
         return eval(functionStatements, callEnviornment);
     }
 
     public Lexeme evalFunction(Lexeme tree, Enviornment enviornment){
-        Lexeme statementList;
-        if(tree.getType() == DROPPER) statementList = tree.getChild(1);
-        else if(tree.getType() == HOPPER_DROPPER) statementList = tree.getChild(2);
-        else return error("Expected DROPPER OR HOPPER_DROPPER, found neither", tree);
-
         Lexeme result;
-        for(int i = 0; i<statementList.getChildren().size(); i++){
-            result = eval(statementList.getChild(i), enviornment);
+        for(int i = 0; i<tree.getChildren().size(); i++){
+            result = eval(tree.getChild(i), enviornment);
             if(result.getType() == DROP) return eval(result.getChild(0), enviornment);
         }
         return error("Lexeme: '" + tree + "' must drop a vaule!", tree.getLineNumber());
@@ -279,8 +277,8 @@ public class Interpreter {
 
     public Lexeme evalConditionalLogic(Lexeme tree, Enviornment enviornment){
         Type type = tree.getType();
-        if(type == OR) return new Lexeme(tree.getLineNumber(), tree.getChild(1).getBoolValue() || tree.getChild(0).getBoolValue(), BOOLEAN);
-        if(type == AND) return new Lexeme(tree.getLineNumber(), tree.getChild(1).getBoolValue() && tree.getChild(0).getBoolValue(), BOOLEAN);
+        if(type == OR) return new Lexeme(tree.getLineNumber(), eval(tree.getChild(1), enviornment).getBoolValue() || eval(tree.getChild(0), enviornment).getBoolValue(), BOOLEAN);
+        if(type == AND) return new Lexeme(tree.getLineNumber(), eval(tree.getChild(1), enviornment).getBoolValue() && eval(tree.getChild(0), enviornment).getBoolValue(), BOOLEAN);
         return error("Can not evaluate conditional logic", tree);
     }
 

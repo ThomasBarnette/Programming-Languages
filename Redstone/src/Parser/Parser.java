@@ -92,10 +92,8 @@ public class Parser {
         }
         else if(conditionalStatementPending()) statement = conditionalStatement();
         else if(functionDefinitonPending()) statement = functionDefiniton();
-        else if(loopPending()){
-            System.out.println("test");
-             statement = loop();
-        }
+        else if(returnStatementPending()) statement = returnStatement();
+        else if(loopPending()) statement = loop();
         else if(printPending()) statement = print();
         else if(expressionPending()){
             statement = expression();
@@ -110,6 +108,7 @@ public class Parser {
 
     private Lexeme expression(){
         log("expression");
+
         if(unaryExpressionPending()) return unaryExpression();
         else if(functionCallPending()) return functionCall();
         else if(naryExpressionPending()) return naryExpression();
@@ -165,8 +164,9 @@ public class Parser {
         Lexeme root = conditionalOperator();
         childeren.add(primary());
         if(conditinoalLogicOperatorPending()){
+            Lexeme oldRoot = root;
             root = conditionalLogicOperator();
-            root.addChild(conditionalOperator());
+            root.addChild(oldRoot);
             root.getChild(0).addAll(childeren);
             root.addChild(conditionalExpression());
         }
@@ -180,6 +180,7 @@ public class Parser {
         else if(check(IDENTIFIER)) return consume(IDENTIFIER);
         else if(check(REAL)) return consume(REAL);
         else if(check(INTEGER)) return consume(INTEGER);
+        else if(check(BOOLEAN)) return consume(BOOLEAN);
         else if(functionCallPending()) return functionCall();
         else if(booleanLiteralPending()) return booleanLiteral();
         else if(check(LINEDOT)) {
@@ -188,6 +189,7 @@ public class Parser {
             consume(DOTLINE);
             return expr;
         }
+        
         else return error("Expected primary, found none");
     }
 
@@ -261,7 +263,6 @@ public class Parser {
         root.addChild(consume(IDENTIFIER));
         consume(OCUBE);
         root.addChild(statementList());
-        root.addChild(returnStatement());
         consume(CCUBE);
         return root;
     }
@@ -275,7 +276,6 @@ public class Parser {
         consume(DOTLINE);
         consume(OCUBE);
         root.addChild(statementList());
-        root.addChild(returnStatement());
         consume(CCUBE);
         return root;
     }
@@ -447,7 +447,7 @@ public class Parser {
         log("print");
         Lexeme root = consume(PRINT);
         consume(LINEDOT);
-        root.addChild(primary());
+        root.addChild(expression());
         consume(DOTLINE);
         end();
         return root;
@@ -469,7 +469,7 @@ public class Parser {
     private boolean statementPending(){
         return (expressionPending() || assignmentPending() || intitializationPending() || deletionPending() 
                 || functionDefinitonPending() || declarationPending() || conditionalStatementPending() 
-                || loopPending() || printPending() || minePending());
+                || loopPending() || printPending() || minePending() || returnStatementPending());
     }
 
     private boolean expressionPending(){
@@ -502,7 +502,7 @@ public class Parser {
     }
 
     private boolean primaryPending(){
-       return(check(IDENTIFIER) || check(BOOLEAN) || check(STRING) || check(INTEGER) || check(REAL) || check(OCUBE) || functionCallPending());
+       return(check(IDENTIFIER) || check(BOOLEAN) || check(STRING) || check(INTEGER) || check(REAL) || check(OCUBE) || functionCallPending() || check(LINEDOT));
     }
 
     private boolean assignmentPending(){
@@ -599,6 +599,10 @@ public class Parser {
 
     private boolean minePending(){
         return check(MINE);
+    }
+
+    private boolean returnStatementPending(){
+        return check(DROP);
     }
 
     private boolean printPending(){

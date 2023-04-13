@@ -74,8 +74,8 @@ public class Enviornment {
     }
 
     public void extend(Lexeme names, Lexeme vals){
-        System.out.println("Names: " + names);
-        System.out.println("Vals: " + vals);
+        // System.out.println("Names: " + names);
+        // System.out.println("Vals: " + vals);
 
         if(names.getChildren().size() != vals.getChildren().size()) error("Trying to match a statement of type '" + names.getType() + "'' with a '" + vals.getType() + ".' However the sizes of these lists do not match", -1);
         ArrayList<Lexeme> nameList = new ArrayList<>();
@@ -92,7 +92,7 @@ public class Enviornment {
             if(type == BOOLEAN) value = new Lexeme(valList.get(i).getLineNumber(), valList.get(i).getBoolValue(), BOOLEAN);
 
             add(valList.get(i).getType(), nameList.get(i), value);
-            System.out.println(valList.toString());
+            // System.out.println(valList.toString());
         }
     }
 
