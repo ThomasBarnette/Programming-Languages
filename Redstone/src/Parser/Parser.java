@@ -335,7 +335,6 @@ public class Parser {
 
     private Lexeme loop(){
         log("loop");
-        System.out.println("test");
         if(repeaterLoopPending()) return repeaterLoop();
         else if(comparatorLoopPending()) return comparatorLoop();
         else return error("Expected loop, found none");

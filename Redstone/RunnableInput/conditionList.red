@@ -1,3 +1,14 @@
+*-
+testing condionals. Output should look like:
+
+yipee!
+no way
+hihihi
+hihi
+hi
+
+-*
+
 /summon y = 5܍
 if|. y >< 5 .| [
     print|. y .|܍

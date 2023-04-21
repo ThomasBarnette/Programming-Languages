@@ -74,9 +74,11 @@ public class Enviornment {
     }
 
     public void extend(Lexeme names, Lexeme vals){
-        // System.out.println("Names: " + names);
-        // System.out.println("Vals: " + vals);
-
+        if(names == null && vals == null) return;
+        else if (names == null || vals == null){
+            error("Unequal number of parameters and arguments", 0);
+            return;
+        }
         if(names.getChildren().size() != vals.getChildren().size()) error("Trying to match a statement of type '" + names.getType() + "'' with a '" + vals.getType() + ".' However the sizes of these lists do not match", -1);
         ArrayList<Lexeme> nameList = new ArrayList<>();
         for(Lexeme child : names.getChildren()) nameList.add(child);
@@ -92,19 +94,8 @@ public class Enviornment {
             if(type == BOOLEAN) value = new Lexeme(valList.get(i).getLineNumber(), valList.get(i).getBoolValue(), BOOLEAN);
 
             add(valList.get(i).getType(), nameList.get(i), value);
-            // System.out.println(valList.toString());
         }
     }
-
-    public Lexeme typeElevate(Lexeme value, Type desiredType){
-        /* 
-        Because my variables aren't type specific, I don't see a use for casting in my language
-
-        Please correct me if I'm wrong and I will actually write out this function and re-submit
-        */
-        return null;
-    }
-
 
     //ToString
     public String toString() {

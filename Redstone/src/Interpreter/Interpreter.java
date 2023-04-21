@@ -22,7 +22,6 @@ public class Interpreter {
     }
 
     public Lexeme eval(Lexeme tree, Enviornment enviornment){
-        // System.out.println(tree.getType());
         return switch(tree.getType()){
             case STATEMENT_LIST -> evalStatementList(tree, enviornment);
             case INTEGER, BOOLEAN, REAL, STRING, MINE, DROP-> tree;

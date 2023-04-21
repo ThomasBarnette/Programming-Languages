@@ -16,17 +16,3 @@ myFunc|. 3, 5 .|܍
 repeater|. 3 .| [
     print|. tick .|܍
 ]
-
-
-/summon y܍
-y = 5܍
-comparator[
-    if|. y <> 1 .| [
-        mine܍
-    ]
-    ese [
-    print|. y .|܍
-    y = -y~1܍
-    ]
-]
- 

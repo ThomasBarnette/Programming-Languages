@@ -7,7 +7,7 @@ import Redstone.Redstone;
 import static LexicalAnalysis.Type.*;
 
 public class Lexer {
-    private final String source;
+    private String source;
     private final ArrayList<Lexeme> lexemes;
     private final HashMap<String, Type> keywords;
 
@@ -17,13 +17,18 @@ public class Lexer {
 
     //constructor
     public Lexer(String source){
-        this.source = source;
         this.lexemes = new ArrayList<>();
         this.keywords = getKeywords();
         this.currentPosition = 0;
         this.startOfCurrentLexeme = 0;
         this.lineNumber = 1;
-    }
+        
+        String commentless = source;
+        while(!commentless.replaceFirst("\\*-((.|\n)*)-\\*", "").equals(commentless)){
+            commentless = commentless.replaceFirst("\\*-((.|\n)*)-\\*", "");
+        }
+        this.source = commentless;
+    }  
 
     private boolean isAtEnd(){
         return currentPosition >= source.length();

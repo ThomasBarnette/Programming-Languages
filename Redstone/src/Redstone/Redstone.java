@@ -39,16 +39,17 @@ public class Redstone {
         System.out.println("Running" + path + "...");
         String source = getSourceCodeFromFile(path);
 
-        //Lexing
+        // Step 1) Turn text into list of lexemes
         Lexer lexer = new Lexer(source);
         ArrayList<Lexeme> lexemes = lexer.lex();
-        // for(Lexeme lexeme : lexemes) System.out.println(lexeme);
-        // Parsing
+        // Step 2) Turn the list lexmees into a parse tree
         Parser parser = new Parser(lexemes);
         Lexeme programParseTree = parser.program();
-        // programParseTree.printAsParseTree();
+        // Step 3) Define global enviornment
         Enviornment globalEnviornment = new Enviornment();
+        //Step 4) Interpret parse tree
         Interpreter interpreter = new Interpreter();
+
         Lexeme programResult = interpreter.eval(programParseTree, globalEnviornment);
         System.out.println("Program Result: \n" + programResult);
         printErrors();
@@ -63,12 +64,12 @@ public class Redstone {
     }
 
     public static void runtimeError(String message, int lineNumber){
-        syntaxErrorMessages.add(randomMotivationToCodeBetter() + "There is a runtime error" + "(line " + lineNumber +  "): " + message);
+        runtimeErrorMessages.add(randomMotivationToCodeBetter() + "There is a runtime error" + "(line " + lineNumber +  "): " + message);
         System.exit(65);
     }
 
     public static void runtimeError(String message, Lexeme lexeme){
-        syntaxErrorMessages.add(randomMotivationToCodeBetter() + "There is a runtime error with " + lexeme + ": " + message);
+        runtimeErrorMessages.add(randomMotivationToCodeBetter() + "There is a runtime error with " + lexeme + ": " + message);
         System.exit(65);
     }
 
