@@ -158,7 +158,7 @@ All priting to the console will be done through the ```print|. .|``` function
 | ```\<num>```   | "is within num of" comparator        |
 | ```><```   | "inequal to" comparator         |
 | ```>num<```  | "is not within num of" comparator        |
-| ```print|. primary .|```   | prints the given primary to the console    |
+| ```print\|. primary .\|```   | prints the given primary to the console    |
 | ```@```   | access the given index in a given list      |
         
   
