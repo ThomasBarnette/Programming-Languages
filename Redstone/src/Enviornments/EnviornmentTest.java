@@ -6,11 +6,11 @@ import static LexicalAnalysis.Type.*;
 public class EnviornmentTest {
 
 
-        public EnviornmentTest(){
+        public static void main(String[] args){
             runTests();
         }
 
-        private void runTests(){
+        private static void runTests(){
         //Pre defined lexemes
         Lexeme testString = new Lexeme(0, "test", STRING);
         Lexeme testInt = new Lexeme(0, 5, INTEGER);
