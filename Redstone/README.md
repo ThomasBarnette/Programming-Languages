@@ -97,6 +97,15 @@ Supports ```<>``` for equals, ```><``` for inequals, and has a unique feature:
 number <value> number 
 ```
 This checks if the numbers are within value from eachother.
+### Logic
+Both  ```and``` and ```or``` keywords are used between conditional expressions to denote standard logic.
+Eamples:
+
+```
++5~3 <> x or -5~3 >< x܍
+
+y and +5~1 <x> 15܍ 
+```
 
 ## Collections
 ### Arrays
@@ -158,7 +167,9 @@ All priting to the console will be done through the ```print|. .|``` function
 | ```\<num>```   | "is within num of" comparator        |
 | ```><```   | "inequal to" comparator         |
 | ```>num<```  | "is not within num of" comparator        |
-| ```print\|. primary .\|```   | prints the given primary to the console    |
+| ```and```   | logical and      |
+| ```or```   | logical or      |
+| ```print\|. primary .\| ```   | prints the given primary to the console    |
 | ```@```   | access the given index in a given list      |
         
   
