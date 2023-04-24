@@ -6,19 +6,19 @@ import Redstone.Redstone;
 
 import static LexicalAnalysis.Type.*;
 
-public class Enviornment {
-    private final Enviornment parent;
+public class Environment {
+    private final Environment parent;
     private final ArrayList<NamedValue> entries;
     private final int code;
 
 
-    public Enviornment(Enviornment parent){
+    public Environment(Environment parent){
         this.parent = parent;
         this.entries = new ArrayList<>();
         code = this.hashCode();
     }
 
-    public Enviornment(){
+    public Environment(){
         this(null);
     }
 
@@ -101,7 +101,7 @@ public class Enviornment {
     public String toString() {
         String end = "";
         String lines = "----------\n";
-        String parent = "\n\tThis is the global enviornment. ";
+        String parent = "\n\tThis is the global environment. ";
         if(this.parent != null) parent = "\n\tParent: " + Integer.toString(this.parent.getCode());
         String values = "";
 

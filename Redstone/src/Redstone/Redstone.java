@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import Enviornments.Enviornment;
+import Enviornments.Environment;
 import Interpreter.Interpreter;
 import LexicalAnalysis.Lexeme;
 import LexicalAnalysis.Lexer;
@@ -45,8 +45,8 @@ public class Redstone {
         // Step 2) Turn the list lexmees into a parse tree
         Parser parser = new Parser(lexemes);
         Lexeme programParseTree = parser.program();
-        // Step 3) Define global enviornment
-        Enviornment globalEnviornment = new Enviornment();
+        // Step 3) Define global environment
+        Environment globalEnviornment = new Environment();
         //Step 4) Interpret parse tree
         Interpreter interpreter = new Interpreter();
 

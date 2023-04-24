@@ -8,7 +8,7 @@ For a comprehensive guidline to the language look in Redstone/README.md
 * Defining a unique grammar 
 * Making a lexer
 * Making recognizer/parser
-* Setting up enviornments
+* Setting up environments
 * Making an interpreter
 
 Created in Spring 2023 by Thomas Barnette © 2023 All rights reserved
